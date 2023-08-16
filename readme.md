@@ -46,26 +46,26 @@ const wiinsdk = new WI.OverlaySdk({
 ````
 3. Parameter
 
-| Key                   |                        Description                        |     Type |
-|:----------------------|:---------------------------------------------------------:|---------:|
+| Key                   | Description                                               |     Type |
+|:----------------------|:----------------------------------------------------------|---------:|
 | tenantId              | Identifier of the account created by the Broadcast Center |  integer |
-| channelId             |       Identifier of the channel created by partner        |   string |
-| streamId              |       Identifier of the channel created by partner        |   string |
-| vastLoadTimeout       |                     Vast Load Timeout                     |  integer |
-| mediaLoadTimeout      |                    Media Load Timeout                     |  integer |
-| bufferingVideoTimeout |                  Buffering Video Timeout                  |  integer |
-| skipAdsDuration       |                     Skip Ad Duration                      |  integer |
-| env                   |   Override the API host url for development and testing   | constant |
-| deviceType            |                        Device Type                        | constant |
-| thirdPartyToken       |                  JWT Token from partner                   |   string |
-| playerType            |                        Player Type                        | constant |
+| channelId             | Identifier of the channel created by partner              |   string |
+| streamId              | Identifier of the channel created by partner              |   string |
+| vastLoadTimeout       | Vast Load Timeout                                         |  integer |
+| mediaLoadTimeout      | Media Load Timeout                                        |  integer |
+| bufferingVideoTimeout | Buffering Video Timeout                                   |  integer |
+| skipAdsDuration       | Skip Ad Duration                                          |  integer |
+| env                   | Override the API host url for development and testing     | constant |
+| deviceType            | Device Type                                               | constant |
+| thirdPartyToken       | JWT Token from partner                                    |   string |
+| playerType            | Player Type                                               | constant |
 
 4. Constant
 
-| Key         |                                           Description                                            |     
-|:------------|:------------------------------------------------------------------------------------------------:|
+| Key         | Description                                                                                      |     
+|:------------|:-------------------------------------------------------------------------------------------------|
 | playerType  | WI.PlayerType.VIDEO_JS <br> WI.PlayerType.SHAKA <br> WI.PlayerType.HLS <br/>WI.PlayerType.AKAMAI |  
-| deviceType  |                             WI.DeviceType.TV <br/> WI.DeviceType.WEB                             |  
-| env         |                      WI.Environment.SANDBOX <br/> WI.Environment.PRODUCTION                      |   
-| contentType |                        WI.ContentType.VOD <br/>WI.ContentType.LIVESTREAM                         | 
+| deviceType  | WI.DeviceType.TV <br/> WI.DeviceType.WEB                                                         |  
+| env         | WI.Environment.SANDBOX <br/> WI.Environment.PRODUCTION                                           |   
+| contentType | WI.ContentType.VOD <br/>WI.ContentType.LIVESTREAM                                                | 
 
