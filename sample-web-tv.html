@@ -19,22 +19,22 @@
 
     <div id="videoId">
         <video id="videojs-player" controls playsinline muted autoplay
-            class="video-js vjs-default-skin vjs-big-play-centered wrap">
+               class="video-js vjs-default-skin vjs-big-play-centered wrap">
             <source src="http://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
         </video>
 
     </div>
 
-    <script src="https://wiinvent.tv/sdk/1.4.0/wi-sdk.js">
+    <script src="https://wiinvent.tv/sdk/wi-sdk-1.4.1.js">
     </script>
 
     <script>
         const player = videojs('videojs-player');
         player.one('play', () => {
             const wiiSdk = new WI.InstreamSdk({
-                env: WI.ENV.SANDBOX,
+                env: WI.Environment.SANDBOX,
                 tenantId: 14,
-                platform: WI.PLATFORM.TV,
+                deviceType: WI.DeviceType.WEB,
                 domId: 'videoId',
                 player: player,
                 channelId: '2',
@@ -51,12 +51,11 @@
             playerType: WI.PlayerType.VIDEO_JS,
             channelId: '2',
             streamId: '604468',
-            deviceType: WI.DeviceType.DESKTOP,
-            env: WI.Environment.DEV,
+            deviceType: WI.DeviceType.WEB,
+            env: WI.Environment.SANDBOX,
             contentType: WI.ContentType.VOD,
-            platform: 'Name device',
             thirdPartyToken: 'JWT ',
-            accountId: 14,
+            tenantId: 14,
 
             onTokenExpire: function () {
                 //token expire
