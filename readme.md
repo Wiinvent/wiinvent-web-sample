@@ -3,7 +3,7 @@ SDK:
 <script src="https://wiinvent.tv/sdk/wi-sdk-1.4.1.js"></script>
 ````
 
-1. Sample Code Instream:
+1.  Code Instream Sample:
 ```javascript
 const player = videojs('videojs-player');
 player.one('play', () => {
@@ -22,7 +22,7 @@ player.one('play', () => {
     });
 });
 ```
-2. Sample Over lay
+2.  Overlay Sample
 
 ````javascript
 const wiinsdk = new WI.OverlaySdk({
