@@ -1,6 +1,6 @@
 SDK: 
 ````javascript
-<script src="https://wiinvent.tv/sdk/wii-sdk-1.4.2.js"></script>
+<script src="https://wiinvent.tv/sdk/wii-sdk-1.4.3.js"></script>
 ````
 
 1.  Code Instream Sample:
@@ -18,7 +18,9 @@ player.one('play', () => {
         vastLoadTimeout: 10,
         mediaLoadTimeout: 10,
         bufferingVideoTimeout: 15,
-        skipAdsDuration: 5
+        skipAdsDuration: 5,
+        alwaysCustomSkip: true,
+        isAutoRequestFocus: false
     });
 });
 ```
@@ -59,6 +61,8 @@ const wiinsdk = new WI.OverlaySdk({
 | deviceType            | Device Type                                               | constant |
 | thirdPartyToken       | JWT Token from partner                                    |   string |
 | playerType            | Player Type                                               | constant |
+| alwaysCustomSkip      | Decided to use custom skip button                         |  boolean |
+| isAutoRequestFocus    | Decided to focus on skip button after skip time           |  boolean |
 
 4. Constant
 
@@ -68,4 +72,18 @@ const wiinsdk = new WI.OverlaySdk({
 | deviceType  | WI.DeviceType.TV <br/> WI.DeviceType.WEB                                                         |  
 | env         | WI.Environment.SANDBOX <br/> WI.Environment.PRODUCTION                                           |   
 | contentType | WI.ContentType.VOD <br/>WI.ContentType.LIVESTREAM                                                | 
+
+5. Ads Callback
+
+| Type      | Value         | Description                                   |
+|:----------|:--------------|:----------------------------------------------|
+| EventType | REQUEST       | Fired when the ad requests                    |
+| EventType | START         | Fired when the ad starts playing              |
+| EventType | IMPRESSION    | Fired when the impression URL has been pinged |
+| EventType | CLICK         | Fired when the ad is clicked                  |
+| EventType | COMPLETE      | Fired when the ad completes playing           |
+| EventType | SKIPPED       | Fired when the ad is skipped by the user      |
+| EventType | ERROR         | Fired when the ad has an error                |
+| EventType | VOLUME_MUTED  | Fired when the ad is muted by the user        |
+| EventType | VOLUME_ON     | Fired when the ad is unmute by the user       |
 
