@@ -1,28 +1,33 @@
 SDK: 
 ````javascript
-<script src="https://wiinvent.tv/sdk/wii-sdk-1.4.3.js"></script>
+<script src="https://wiinvent.tv/sdk/wii-sdk-1.4.4.js"></script>
 ````
 
 1.  Code Instream Sample:
 ```javascript
 const player = videojs('videojs-player');
-player.one('play', () => {
-    const wiiSdk = new WI.InstreamSdk({
-        env: WI.Environment.SANDBOX,
-        tenantId: 14,
-        deviceType: WI.DeviceType.WEB,
-        domId: 'videoId',
-        player: player,
-        channelId: '2',
-        streamId: '604468',
-        vastLoadTimeout: 10,
-        mediaLoadTimeout: 10,
-        bufferingVideoTimeout: 15,
-        skipAdsDuration: 5,
-        alwaysCustomSkip: true,
-        isAutoRequestFocus: false
-    });
+const wiiSdk = new WI.InstreamSdk({
+  env: WI.Environment.SANDBOX,
+  tenantId: 14,
+  deviceType: WI.DeviceType.WEB,
+  domId: 'videoId',
+  player: player,
+  channelId: '2',
+  streamId: '604468',
+  vastLoadTimeout: 10,
+  mediaLoadTimeout: 10,
+  bufferingVideoTimeout: 15,
+  skipAdsDuration: 5,
+  alwaysCustomSkip: true,
+  isAutoRequestFocus: false
 });
+
+player.one('play', () => {
+  wiiSdk.start();
+});
+player.on('sourceset', () => {
+  wiiSdk.destroy();
+})
 ```
 2.  Overlay Sample
 
