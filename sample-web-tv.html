@@ -5,11 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <title>Wiinvent Web</title>
-    <style>
-        #videoId {
-            margin-bottom: 20px;
-        }
-    </style>
     <link href="https://unpkg.com/video.js/dist/video-js.css" rel="stylesheet">
     <script src="https://unpkg.com/video.js/dist/video.js"></script>
     <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
@@ -17,64 +12,68 @@
 
 <body style="margin: 0; " cz-shortcut-listen="true">
 
-    <div id="videoId">
-        <video id="videojs-player" controls playsinline muted autoplay
-               class="video-js vjs-default-skin vjs-big-play-centered wrap">
-            <source src="http://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
-        </video>
+<div id="videoId">
+    <video id="videojs-player" controls playsinline muted autoplay
+           class="video-js vjs-default-skin vjs-big-play-centered wrap">
+        <source src="http://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
+    </video>
 
-    </div>
+</div>
 
-    <script src="https://wiinvent.tv/sdk/wii-sdk-1.4.4.js">
-    </script>
+<script src="https://wiinvent.tv/sdk/wii-sdk-1.4.4.js">
+</script>
 
-    <script>
-        const player = videojs('videojs-player');
-        player.one('play', () => {
-            const wiiSdk = new WI.InstreamSdk({
-                env: WI.Environment.SANDBOX,
-                tenantId: 14,
-                deviceType: WI.DeviceType.WEB,
-                domId: 'videoId',
-                player: player,
-                channelId: '2',
-                streamId: '999999',
-                vastLoadTimeout: 10,
-                mediaLoadTimeout: 10,
-                bufferingVideoTimeout: 15,
-                skipAdsDuration: 5,
-                alwaysCustomSkip: true,
-                isAutoRequestFocus: false
-            });
-        });
+<script>
+  const player = videojs('videojs-player');
+  const wiiSdk = new WI.InstreamSdk({
+    env: WI.Environment.SANDBOX,
+    tenantId: 14,
+    deviceType: WI.DeviceType.WEB,
+    domId: 'videoId',
+    player: player,
+    channelId: '2',
+    streamId: '999999',
+    vastLoadTimeout: 10,
+    mediaLoadTimeout: 10,
+    bufferingVideoTimeout: 15,
+    skipAdsDuration: 5,
+    alwaysCustomSkip: true,
+    isAutoRequestFocus: false
+  });
 
-        const wiinsdk = new WI.OverlaySdk({
-            domId: "videojs-player",
-            playerType: WI.PlayerType.VIDEO_JS,
-            channelId: '2',
-            streamId: '604468',
-            deviceType: WI.DeviceType.WEB,
-            env: WI.Environment.SANDBOX,
-            contentType: WI.ContentType.VOD,
-            thirdPartyToken: 'JWT ',
-            tenantId: 14,
+  player.one('play', () => {
+    wiiSdk.start();
+  });
+  player.on('sourceset', () => {
+    wiiSdk.destroy();
+  })
 
-            onTokenExpire: function () {
-                //token expire
-            },
-            onUserLogin: function () {
-                //require login
-            }
-        })
+  const wiinsdk = new WI.OverlaySdk({
+    domId: "videojs-player",
+    playerType: WI.PlayerType.VIDEO_JS,
+    channelId: '2',
+    streamId: '604468',
+    deviceType: WI.DeviceType.WEB,
+    env: WI.Environment.SANDBOX,
+    contentType: WI.ContentType.VOD,
+    thirdPartyToken: 'JWT ',
+    tenantId: 14,
 
-        player.one('play', () => wiinsdk.start())
-        player.on('ended', () => wiinsdk.stop());
-        player.on('pause', () => wiinsdk.hide());
-        player.on('play', () => wiinsdk.show())
-        player.on('error', () => wiinsdk.stop());
-        player.on('timeupdate', () => wiinsdk.timeUpdate(player.currentTime()));
-    </script>
+    onTokenExpire: function () {
+      //token expire
+    },
+    onUserLogin: function () {
+      //require login
+    }
+  })
 
+  player.one('play', () => wiinsdk.start())
+  player.on('ended', () => wiinsdk.stop());
+  player.on('pause', () => wiinsdk.hide());
+  player.on('play', () => wiinsdk.show())
+  player.on('error', () => wiinsdk.stop());
+  player.on('timeupdate', () => wiinsdk.timeUpdate(player.currentTime()));
+</script>
 
 
 </body>
