@@ -17,7 +17,6 @@
            class="video-js vjs-default-skin vjs-big-play-centered wrap">
         <source src="http://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
     </video>
-
 </div>
 
 <script src="https://wiinvent.tv/sdk/wii-sdk-1.4.4.js">
@@ -25,6 +24,7 @@
 
 <script>
   const player = videojs('videojs-player');
+
   const wiiSdk = new WI.InstreamSdk({
     env: WI.Environment.SANDBOX,
     tenantId: 14,
@@ -36,17 +36,13 @@
     vastLoadTimeout: 10,
     mediaLoadTimeout: 10,
     bufferingVideoTimeout: 15,
-    skipAdsDuration: 5,
     alwaysCustomSkip: true,
     isAutoRequestFocus: false
   });
 
-  player.one('play', () => {
-    wiiSdk.start();
-  });
-  player.on('sourceset', () => {
-    wiiSdk.destroy();
-  })
+  player.one('play', () => wiiSdk.start());
+  player.on('sourceset', () => wiiSdk.destroy())
+  player.on('resize', () => wiiSdk.changeSize())
 
   const wiinsdk = new WI.OverlaySdk({
     domId: "videojs-player",

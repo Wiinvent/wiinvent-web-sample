@@ -17,16 +17,13 @@ const wiiSdk = new WI.InstreamSdk({
   vastLoadTimeout: 10,
   mediaLoadTimeout: 10,
   bufferingVideoTimeout: 15,
-  skipAdsDuration: 5,
   alwaysCustomSkip: true,
   isAutoRequestFocus: false
 });
 
-player.one('play', () => {
-  wiiSdk.start();
-});
-player.on('sourceset', () => {
-  wiiSdk.destroy();
+player.one('play', () => wiiSdk.start());
+player.on('sourceset', () => wiiSdk.destroy())
+player.on('resize', () => wiiSdk.changeSize())
 })
 ```
 2.  Overlay Sample
@@ -60,8 +57,7 @@ const wiinsdk = new WI.OverlaySdk({
 | streamId              | Identifier of the channel created by partner              |   string |
 | vastLoadTimeout       | Vast Load Timeout                                         |  integer |
 | mediaLoadTimeout      | Media Load Timeout                                        |  integer |
-| bufferingVideoTimeout | Buffering Video Timeout                                   |  integer |
-| skipAdsDuration       | Skip Ad Duration                                          |  integer |
+| bufferingVideoTimeout | Buffering Video Timeout                                   |  integer |                                  
 | env                   | Override the API host url for development and testing     | constant |
 | deviceType            | Device Type                                               | constant |
 | thirdPartyToken       | JWT Token from partner                                    |   string |
