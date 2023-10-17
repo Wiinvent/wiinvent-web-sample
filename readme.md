@@ -22,9 +22,9 @@ const wiiSdk = new WI.InstreamSdk({
 });
 
 player.one('play', () => wiiSdk.start());
-player.on('sourceset', () => wiiSdk.destroy())
-player.on('resize', () => wiiSdk.changeSize())
-})
+player.on('sourceset', () => wiiSdk.destroy());
+player.on('resize', () => wiiSdk.changeSize());
+
 ```
 2.  Overlay Sample
 
