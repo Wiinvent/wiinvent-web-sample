@@ -13,13 +13,13 @@
 <body style="margin: 0; " cz-shortcut-listen="true">
 
 <div id="videoId">
-    <video id="videojs-player" controls playsinline muted autoplay
+    <video style="width: 100%" id="videojs-player" controls playsinline muted autoplay
            class="video-js vjs-default-skin vjs-big-play-centered wrap">
         <source src="http://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
     </video>
 </div>
 
-<script src="https://wiinvent.tv/sdk/wii-sdk-1.4.4.js">
+<script src="https://wiinvent.tv/sdk/wii-sdk-1.4.5.js">
 </script>
 
 <script>
@@ -40,7 +40,7 @@
     isAutoRequestFocus: false
   });
 
-  player.one('play', () => wiiSdk.start());
+  player.one('play', () => wiiSdk.start())
   player.on('sourceset', () => wiiSdk.destroy())
   player.on('resize', () => wiiSdk.changeSize())
 

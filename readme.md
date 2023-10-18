@@ -1,6 +1,6 @@
 SDK: 
 ````javascript
-<script src="https://wiinvent.tv/sdk/wii-sdk-1.4.4.js"></script>
+<script src="https://wiinvent.tv/sdk/wii-sdk-1.4.5.js"></script>
 ````
 
 1.  Code Instream Sample:
@@ -21,9 +21,9 @@ const wiiSdk = new WI.InstreamSdk({
   isAutoRequestFocus: false
 });
 
-player.one('play', () => wiiSdk.start());
-player.on('sourceset', () => wiiSdk.destroy());
-player.on('resize', () => wiiSdk.changeSize());
+player.one('play', () => wiiSdk.start())
+player.on('sourceset', () => wiiSdk.destroy())
+player.on('resize', () => wiiSdk.changeSize())
 
 ```
 2.  Overlay Sample
