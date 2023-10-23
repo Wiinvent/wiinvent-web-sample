@@ -19,7 +19,7 @@
     </video>
 </div>
 
-<script src="https://wiinvent.tv/sdk/wii-sdk-1.4.5.js">
+<script src="https://wiinvent.tv/sdk/wii-sdk-1.4.6.js">
 </script>
 
 <script>
@@ -43,6 +43,12 @@
   player.one('play', () => wiiSdk.start())
   player.on('sourceset', () => wiiSdk.destroy())
   player.on('resize', () => wiiSdk.changeSize())
+
+  window.addEventListener("message", function (e) {
+    if (e.data === "ADS_REQUEST") {
+
+    }
+  })
 
   const wiinsdk = new WI.OverlaySdk({
     domId: "videojs-player",

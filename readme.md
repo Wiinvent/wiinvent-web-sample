@@ -1,9 +1,11 @@
-SDK: 
+SDK:
+
 ````javascript
-<script src="https://wiinvent.tv/sdk/wii-sdk-1.4.5.js"></script>
+<script src="https://wiinvent.tv/sdk/wii-sdk-1.4.6.js"></script>
 ````
 
-1.  Code Instream Sample:
+1. Code Instream Sample:
+
 ```javascript
 const player = videojs('videojs-player');
 const wiiSdk = new WI.InstreamSdk({
@@ -25,29 +27,37 @@ player.one('play', () => wiiSdk.start())
 player.on('sourceset', () => wiiSdk.destroy())
 player.on('resize', () => wiiSdk.changeSize())
 
+window.addEventListener("message", function (e) {
+  if (e.data === "ADS_REQUEST") {
+
+  }
+})
+
 ```
-2.  Overlay Sample
+
+2. Overlay Sample
 
 ````javascript
 const wiinsdk = new WI.OverlaySdk({
-    domId: "videojs-player",
-    playerType: WI.PlayerType.VIDEO_JS,
-    channelId: '2',
-    streamId: '604468',
-    deviceType: WI.DeviceType.WEB,
-    env: WI.Environment.SANDBOX,
-    contentType: WI.ContentType.VOD,
-    thirdPartyToken: 'JWT ',
-    tenantId: 14,
+  domId: "videojs-player",
+  playerType: WI.PlayerType.VIDEO_JS,
+  channelId: '2',
+  streamId: '604468',
+  deviceType: WI.DeviceType.WEB,
+  env: WI.Environment.SANDBOX,
+  contentType: WI.ContentType.VOD,
+  thirdPartyToken: 'JWT ',
+  tenantId: 14,
 
-    onTokenExpire: function () {
-        //token expire
-    },
-    onUserLogin: function () {
-        //require login
-    }
+  onTokenExpire: function () {
+    //token expire
+  },
+  onUserLogin: function () {
+    //require login
+  }
 })
 ````
+
 3. Parameter
 
 | Key                   | Description                                               |     Type |
@@ -76,15 +86,15 @@ const wiinsdk = new WI.OverlaySdk({
 
 5. Ads Callback
 
-| Type      | Value         | Description                                   |
-|:----------|:--------------|:----------------------------------------------|
-| EventType | REQUEST       | Fired when the ad requests                    |
-| EventType | START         | Fired when the ad starts playing              |
-| EventType | IMPRESSION    | Fired when the impression URL has been pinged |
-| EventType | CLICK         | Fired when the ad is clicked                  |
-| EventType | COMPLETE      | Fired when the ad completes playing           |
-| EventType | SKIPPED       | Fired when the ad is skipped by the user      |
-| EventType | ERROR         | Fired when the ad has an error                |
-| EventType | VOLUME_MUTED  | Fired when the ad is muted by the user        |
-| EventType | VOLUME_ON     | Fired when the ad is unmute by the user       |
+| Type      | Value             | Description                                   |
+|:----------|:------------------|:----------------------------------------------|
+| EventType | ADS_REQUEST       | Fired when the ad requests                    |
+| EventType | ADS_START         | Fired when the ad starts playing              |
+| EventType | ADS_IMPRESSION    | Fired when the impression URL has been pinged |
+| EventType | ADS_CLICK         | Fired when the ad is clicked                  |
+| EventType | ADS_COMPLETE      | Fired when the ad completes playing           |
+| EventType | ADS_SKIPPED       | Fired when the ad is skipped by the user      |
+| EventType | ADS_ERROR         | Fired when the ad has an error                |
+| EventType | ADS_VOLUME_MUTED  | Fires when the ad volume has been muted       |
+| EventType | ADS_VOLUME_CHANGE | Fires when the ad volume has changed          |
 
