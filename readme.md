@@ -1,7 +1,7 @@
 SDK:
 
 ````javascript
-<script src="https://wiinvent.tv/sdk/wii-sdk-1.4.7.js"></script>
+<script src="https://wiinvent.tv/sdk/wii-sdk-1.4.8.js"></script>
 ````
 
 1. Code Instream Sample:
@@ -101,4 +101,5 @@ const wiinsdk = new WI.OverlaySdk({
 | EventType | ADS_ERROR         | Fired when the ad has an error                |
 | EventType | ADS_VOLUME_MUTED  | Fires when the ad volume has been muted       |
 | EventType | ADS_VOLUME_CHANGE | Fires when the ad volume has changed          |
+| EventType | ADS_DESTROY       | Fires when the ad destroyed                   |
 
