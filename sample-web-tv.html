@@ -2,24 +2,24 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
-    <title>Wiinvent Web</title>
-    <link href="https://unpkg.com/video.js/dist/video-js.css" rel="stylesheet">
-    <script src="https://unpkg.com/video.js/dist/video.js"></script>
-    <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Wiinvent Web</title>
+  <link href="https://unpkg.com/video.js/dist/video-js.css" rel="stylesheet">
+  <script src="https://unpkg.com/video.js/dist/video.js"></script>
+  <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
 </head>
 
 <body style="margin: 0; " cz-shortcut-listen="true">
 
 <div id="videoId">
-    <video style="width: 100%" id="videojs-player" controls playsinline muted autoplay
-           class="video-js vjs-default-skin vjs-big-play-centered wrap">
-        <source src="http://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
-    </video>
+  <video style="width: 100%" id="videojs-player" controls playsinline muted autoplay
+         class="video-js vjs-default-skin vjs-big-play-centered wrap">
+    <source src="http://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
+  </video>
 </div>
 
-<script src="https://wiinvent.tv/sdk/wii-sdk-1.4.6.js">
+<script src="https://wiinvent.tv/sdk/wii-sdk-1.4.7.js">
 </script>
 
 <script>
@@ -48,7 +48,12 @@
     if (e.data === "ADS_REQUEST") {
 
     }
+    if (e.data.type === "ADS_ERROR") {
+      console.log("==== ADS_ERROR ====")
+      console.log(e.data.error)
+    }
   })
+
 
   const wiinsdk = new WI.OverlaySdk({
     domId: "videojs-player",

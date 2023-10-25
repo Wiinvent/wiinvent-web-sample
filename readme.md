@@ -1,7 +1,7 @@
 SDK:
 
 ````javascript
-<script src="https://wiinvent.tv/sdk/wii-sdk-1.4.6.js"></script>
+<script src="https://wiinvent.tv/sdk/wii-sdk-1.4.7.js"></script>
 ````
 
 1. Code Instream Sample:
@@ -30,6 +30,10 @@ player.on('resize', () => wiiSdk.changeSize())
 window.addEventListener("message", function (e) {
   if (e.data === "ADS_REQUEST") {
 
+  }
+  if (e.data.type === "ADS_ERROR") {
+    console.log("==== ADS_ERROR ====")
+    console.log(e.data.error)
   }
 })
 
