@@ -50,6 +50,10 @@
       console.log(e.data.campaignId)
       console.log(e.data.duration)
     }
+    if (e.data.type === "ERROR") {
+      console.log("==== ERROR ====")
+      console.log(e.data.error)
+    }
     if (e.data.type === "ADS_ERROR") {
       console.log("==== ADS_ERROR ====")
       console.log(e.data.error)
