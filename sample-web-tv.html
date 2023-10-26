@@ -19,7 +19,7 @@
   </video>
 </div>
 
-<script src="https://wiinvent.tv/sdk/wii-sdk-1.4.9.js">
+<script src="https://wiinvent.tv/sdk/wii-sdk-1.5.0.js">
 </script>
 
 <script>
@@ -45,8 +45,10 @@
   player.on('resize', () => wiiSdk.changeSize())
 
   window.addEventListener("message", function (e) {
-    if (e.data === "ADS_REQUEST") {
-
+    if (e.data.type === "ADS_LOADED") {
+      console.log("==== ADS_LOADED ====")
+      console.log(e.data.campaignId)
+      console.log(e.data.duration)
     }
     if (e.data.type === "ADS_ERROR") {
       console.log("==== ADS_ERROR ====")

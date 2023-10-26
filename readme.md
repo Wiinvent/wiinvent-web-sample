@@ -1,7 +1,7 @@
 SDK:
 
 ````javascript
-<script src="https://wiinvent.tv/sdk/wii-sdk-1.4.9.js"></script>
+<script src="https://wiinvent.tv/sdk/wii-sdk-1.5.0.js"></script>
 ````
 
 1. Code Instream Sample:
@@ -28,8 +28,10 @@ player.on('sourceset', () => wiiSdk.destroy())
 player.on('resize', () => wiiSdk.changeSize())
 
 window.addEventListener("message", function (e) {
-  if (e.data === "ADS_REQUEST") {
-
+  if (e.data.type === "ADS_LOADED") {
+    console.log("==== ADS_LOADED ====")
+    console.log(e.data.campaignId)
+    console.log(e.data.duration)
   }
   if (e.data.type === "ADS_ERROR") {
     console.log("==== ADS_ERROR ====")
@@ -93,6 +95,7 @@ const wiinsdk = new WI.OverlaySdk({
 | Type      | Value             | Description                                   |
 |:----------|:------------------|:----------------------------------------------|
 | EventType | ADS_REQUEST       | Fired when the ad requests                    |
+| EventType | ADS_LOADED        | Fired when the ad loaded                      |
 | EventType | ADS_START         | Fired when the ad starts playing              |
 | EventType | ADS_IMPRESSION    | Fired when the impression URL has been pinged |
 | EventType | ADS_CLICK         | Fired when the ad is clicked                  |
