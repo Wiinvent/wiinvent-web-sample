@@ -1,7 +1,7 @@
 SDK:
 
 ````javascript
-<script src="https://wiinvent.tv/sdk/wii-sdk-1.5.0.js"></script>
+<script src="https://wiinvent.tv/sdk/wii-sdk-1.5.1.js"></script>
 ````
 
 1. Code Instream Sample:
@@ -16,6 +16,7 @@ const wiiSdk = new WI.InstreamSdk({
   player: player,
   channelId: '2',
   streamId: '604468',
+  partnerSkipOffset: 5,
   vastLoadTimeout: 10,
   mediaLoadTimeout: 10,
   bufferingVideoTimeout: 15,
@@ -23,19 +24,12 @@ const wiiSdk = new WI.InstreamSdk({
   isAutoRequestFocus: false
 });
 
-player.one('play', () => wiiSdk.start())
+player.one('loadeddata', () => wiiSdk.start())
 player.on('sourceset', () => wiiSdk.destroy())
 player.on('resize', () => wiiSdk.changeSize())
-
 window.addEventListener("message", function (e) {
-  if (e.data.type === "ADS_LOADED") {
-    console.log("==== ADS_LOADED ====")
-    console.log(e.data.campaignId)
-    console.log(e.data.duration)
-  }
-  if (e.data.type === "ADS_ERROR") {
-    console.log("==== ADS_ERROR ====")
-    console.log(e.data.error)
+  if (['REQUEST', 'LOADED', 'ERROR', 'START', 'PAUSED', 'RESUMED', 'CLICK', 'IMPRESSION', 'SKIPPED', 'COMPLETE', 'DESTROY'].includes(e.data.type)) {
+    console.log('mmmm', e)
   }
 })
 
@@ -74,6 +68,7 @@ const wiinsdk = new WI.OverlaySdk({
 | vastLoadTimeout       | Vast Load Timeout                                         |  integer |
 | mediaLoadTimeout      | Media Load Timeout                                        |  integer |
 | bufferingVideoTimeout | Buffering Video Timeout                                   |  integer |                                  
+| partnerSkipOffset     | Skip Ad Duration                                          |  integer |                                  
 | env                   | Override the API host url for development and testing     | constant |
 | deviceType            | Device Type                                               | constant |
 | thirdPartyToken       | JWT Token from partner                                    |   string |
@@ -92,17 +87,15 @@ const wiinsdk = new WI.OverlaySdk({
 
 5. Ads Callback
 
-| Type      | Value             | Description                                   |
-|:----------|:------------------|:----------------------------------------------|
-| EventType | ADS_REQUEST       | Fired when the ad requests                    |
-| EventType | ADS_LOADED        | Fired when the ad loaded                      |
-| EventType | ADS_START         | Fired when the ad starts playing              |
-| EventType | ADS_IMPRESSION    | Fired when the impression URL has been pinged |
-| EventType | ADS_CLICK         | Fired when the ad is clicked                  |
-| EventType | ADS_COMPLETE      | Fired when the ad completes playing           |
-| EventType | ADS_SKIPPED       | Fired when the ad is skipped by the user      |
-| EventType | ADS_ERROR         | Fired when the ad has an error                |
-| EventType | ADS_VOLUME_MUTED  | Fires when the ad volume has been muted       |
-| EventType | ADS_VOLUME_CHANGE | Fires when the ad volume has changed          |
-| EventType | ADS_DESTROY       | Fires when the ad destroyed                   |
+| Type      | Value      | Description                                   |
+|:----------|:-----------|:----------------------------------------------|
+| EventType | REQUEST    | Fired when the ad requests                    |
+| EventType | LOADED     | Fired when the ad loaded                      |
+| EventType | START      | Fired when the ad starts playing              |
+| EventType | IMPRESSION | Fired when the impression URL has been pinged |
+| EventType | CLICK      | Fired when the ad is clicked                  |
+| EventType | COMPLETE   | Fired when the ad completes playing           |
+| EventType | SKIPPED    | Fired when the ad is skipped by the user      |
+| EventType | ERROR      | Fired when the ad has an error                |
+| EventType | DESTROY    | Fires when the ad destroyed                   |
 

@@ -19,7 +19,7 @@
   </video>
 </div>
 
-<script src="https://wiinvent.tv/sdk/wii-sdk-1.5.0.js">
+<script src="https://wiinvent.tv/sdk/wii-sdk-1.5.1.js">
 </script>
 
 <script>
@@ -33,6 +33,7 @@
     player: player,
     channelId: '2',
     streamId: '999999',
+    partnerSkipOffset: 5,
     vastLoadTimeout: 10,
     mediaLoadTimeout: 10,
     bufferingVideoTimeout: 15,
@@ -40,53 +41,14 @@
     isAutoRequestFocus: false
   });
 
-  player.one('play', () => wiiSdk.start())
+  player.one('loadeddata', () => wiiSdk.start())
   player.on('sourceset', () => wiiSdk.destroy())
   player.on('resize', () => wiiSdk.changeSize())
-
   window.addEventListener("message", function (e) {
-    if (e.data.type === "ADS_REQUEST") {
-      console.log("==== ADS_REQUEST ====")
-    }
-    if (e.data.type === "ADS_LOADED") {
-      console.log("==== ADS_LOADED ====")
-      console.log(e.data.campaignId)
-      console.log(e.data.duration)
-    }
-    if (e.data.type === "ERROR") {
-      console.log("==== ERROR ====")
-      console.log(e.data.error)
-    }
-    if (e.data.type === "ADS_ERROR") {
-      console.log("==== ADS_ERROR ====")
-      console.log(e.data.error)
-    }
-    if (e.data.type === "ADS_BEGIN") {
-      console.log("==== ADS_BEGIN ====")
-    }
-    if (e.data.type === "ADS_START") {
-      console.log("==== ADS_START ====")
-    }
-    if (e.data.type === "ADS_PAUSED") {
-      console.log("==== ADS_PAUSED ====")
-    }
-    if (e.data.type === "ADS_RESUMED") {
-      console.log("==== ADS_RESUMED ====")
-    }
-    if (e.data.type === "ADS_CLICK") {
-      console.log("==== ADS_CLICK ====")
-    }
-    if (e.data.type === "ADS_IMPRESSION") {
-      console.log("==== ADS_IMPRESSION ====")
-    }
-    if (e.data.type === "ADS_SKIPPED") {
-      console.log("==== ADS_SKIPPED ====")
-    }
-    if (e.data.type === "ADS_COMPLETE") {
-      console.log("==== ADS_COMPLETE ====")
+    if (['REQUEST', 'LOADED', 'ERROR', 'START', 'PAUSED', 'RESUMED', 'CLICK', 'IMPRESSION', 'SKIPPED', 'COMPLETE', 'DESTROY'].includes(e.data.type)) {
+      console.log('mmmm', e)
     }
   })
-
 
   const wiinsdk = new WI.OverlaySdk({
     domId: "videojs-player",
