@@ -38,31 +38,31 @@
 <script>
   const player = videojs('videojs-player');
 
-  const wiiSdk = new WI.InstreamSdk({
-    env: WI.Environment.SANDBOX,
-    tenantId: 14,
-    deviceType: WI.DeviceType.WEB,
-    domId: 'videoId',
-    player: player,
-    playerType: 'VIDEO',
-    channelId: '277',
-    streamId: '667788',
-    partnerSkipOffset: 5,
-    vastLoadTimeout: 10,
-    mediaLoadTimeout: 10,
-    bufferingVideoTimeout: 15,
-    alwaysCustomSkip: true,
-    isAutoRequestFocus: false
-  });
-
-  player.one('loadeddata', () => wiiSdk.start())
-  player.on('sourceset', () => wiiSdk.destroy())
-  player.on('resize', () => wiiSdk.changeSize())
-  window.addEventListener("message", function (e) {
-    if (['REQUEST', 'LOADED', 'ERROR', 'START', 'PAUSED', 'RESUMED', 'CLICK', 'IMPRESSION', 'SKIPPED', 'COMPLETE', 'DESTROY'].includes(e.data.type)) {
-      console.log('mmmm', e)
-    }
-  })
+  // const wiiSdk = new WI.InstreamSdk({
+  //   env: WI.Environment.SANDBOX,
+  //   tenantId: 14,
+  //   deviceType: WI.DeviceType.WEB,
+  //   domId: 'videoId',
+  //   player: player,
+  //   playerType: 'VIDEO',
+  //   channelId: '277',
+  //   streamId: '667788',
+  //   partnerSkipOffset: 5,
+  //   vastLoadTimeout: 10,
+  //   mediaLoadTimeout: 10,
+  //   bufferingVideoTimeout: 15,
+  //   alwaysCustomSkip: true,
+  //   isAutoRequestFocus: false
+  // });
+  //
+  // player.one('loadeddata', () => wiiSdk.start())
+  // player.on('sourceset', () => wiiSdk.destroy())
+  // player.on('resize', () => wiiSdk.changeSize())
+  // window.addEventListener("message", function (e) {
+  //   if (['REQUEST', 'LOADED', 'ERROR', 'START', 'PAUSED', 'RESUMED', 'CLICK', 'IMPRESSION', 'SKIPPED', 'COMPLETE', 'DESTROY'].includes(e.data.type)) {
+  //     console.log('mmmm', e)
+  //   }
+  // })
 
   // =============================================================================================================================================================== //
 
