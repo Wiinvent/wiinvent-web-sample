@@ -1,7 +1,7 @@
 SDK:
 
 ````javascript
-<script src="https://wiinvent.tv/sdk/wii-sdk-1.5.1.js"></script>
+<script src="https://wiinvent.tv/sdk/wii-sdk-1.5.2.js"></script>
 ````
 
 1. Code Instream Sample:
@@ -14,6 +14,7 @@ const wiiSdk = new WI.InstreamSdk({
   deviceType: WI.DeviceType.WEB,
   domId: 'videoId',
   player: player,
+  playerType: 'VIDEO',
   channelId: '2',
   streamId: '604468',
   partnerSkipOffset: 5,
