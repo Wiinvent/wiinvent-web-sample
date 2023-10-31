@@ -1,7 +1,7 @@
 SDK:
 
 ````javascript
-<script src="https://wiinvent.tv/sdk/wii-sdk-1.5.2.js"></script>
+<script src="https://wiinvent.tv/sdk/wii-sdk-1.5.4.js"></script>
 ````
 
 1. Code Instream Sample:
@@ -22,7 +22,8 @@ const wiiSdk = new WI.InstreamSdk({
   mediaLoadTimeout: 10,
   bufferingVideoTimeout: 15,
   alwaysCustomSkip: true,
-  isAutoRequestFocus: false
+  isAutoRequestFocus: false,
+  bitrate: 1024  
 });
 
 player.one('loadeddata', () => wiiSdk.start())
@@ -76,6 +77,7 @@ const wiinsdk = new WI.OverlaySdk({
 | playerType            | Player Type                                               | constant |
 | alwaysCustomSkip      | Decided to use custom skip button                         |  boolean |
 | isAutoRequestFocus    | Decided to focus on skip button after skip time           |  boolean |
+| bitrate               | Bitrate                                                   |   number |
 
 4. Constant
 

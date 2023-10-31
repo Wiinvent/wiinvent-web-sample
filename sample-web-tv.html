@@ -32,22 +32,53 @@
   </video>
 </div>
 
-<script src="https://wiinvent.tv/sdk/wii-sdk-1.5.2.js">
+<script src="https://wiinvent.tv/sdk/wii-sdk-1.5.4.js">
 </script>
 
 <script>
   const player = videojs('videojs-player');
 
-  // const wiiSdk = new WI.InstreamSdk({
+  const wiiSdk = new WI.InstreamSdk({
+    env: WI.Environment.SANDBOX,
+    tenantId: 14,
+    deviceType: WI.DeviceType.WEB,
+    domId: 'videoId',
+    player: player,
+    playerType: 'VIDEO',
+    channelId: '277',
+    streamId: '667788',
+    partnerSkipOffset: 5,
+    vastLoadTimeout: 10,
+    mediaLoadTimeout: 10,
+    bufferingVideoTimeout: 15,
+    alwaysCustomSkip: true,
+    isAutoRequestFocus: false,
+    bitrate: 1024
+  });
+
+  player.one('loadeddata', () => wiiSdk.start())
+  player.on('sourceset', () => wiiSdk.destroy())
+  player.on('resize', () => wiiSdk.changeSize())
+  window.addEventListener("message", function (e) {
+    if (['REQUEST', 'LOADED', 'ERROR', 'START', 'PAUSED', 'RESUMED', 'CLICK', 'IMPRESSION', 'SKIPPED', 'COMPLETE', 'DESTROY'].includes(e.data.type)) {
+      console.log('mmmm', e)
+    }
+  })
+
+  // =============================================================================================================================================================== //
+  //
+  // const shaka = document.getElementById('videoIdShaka')
+  //
+  // var wiiSdkSk = new WI.InstreamSdk({
   //   env: WI.Environment.SANDBOX,
   //   tenantId: 14,
   //   deviceType: WI.DeviceType.WEB,
-  //   domId: 'videoId',
-  //   player: player,
-  //   playerType: 'VIDEO',
-  //   channelId: '277',
-  //   streamId: '667788',
-  //   partnerSkipOffset: 5,
+  //   domId: 'videoIdShaka',
+  //   player: shaka,
+  //   playerType: "SHAKA",
+  //   channelId: '2',
+  //   streamId: '999999',
+  //   partnerSkipOffset: 0,
   //   vastLoadTimeout: 10,
   //   mediaLoadTimeout: 10,
   //   bufferingVideoTimeout: 15,
@@ -55,37 +86,7 @@
   //   isAutoRequestFocus: false
   // });
   //
-  // player.one('loadeddata', () => wiiSdk.start())
-  // player.on('sourceset', () => wiiSdk.destroy())
-  // player.on('resize', () => wiiSdk.changeSize())
-  // window.addEventListener("message", function (e) {
-  //   if (['REQUEST', 'LOADED', 'ERROR', 'START', 'PAUSED', 'RESUMED', 'CLICK', 'IMPRESSION', 'SKIPPED', 'COMPLETE', 'DESTROY'].includes(e.data.type)) {
-  //     console.log('mmmm', e)
-  //   }
-  // })
-
-  // =============================================================================================================================================================== //
-
-  const shaka = document.getElementById('videoIdShaka')
-
-  var wiiSdkSk = new WI.InstreamSdk({
-    env: WI.Environment.SANDBOX,
-    tenantId: 14,
-    deviceType: WI.DeviceType.WEB,
-    domId: 'videoIdShaka',
-    player: shaka,
-    playerType: "SHAKA",
-    channelId: '2',
-    streamId: '999999',
-    partnerSkipOffset: 0,
-    vastLoadTimeout: 10,
-    mediaLoadTimeout: 10,
-    bufferingVideoTimeout: 15,
-    alwaysCustomSkip: true,
-    isAutoRequestFocus: false
-  });
-
-  document.addEventListener('shaka-ui-loaded', wiiSdkSk.start());
+  // document.addEventListener('shaka-ui-loaded', wiiSdkSk.start());
 
   // =============================================================================================================================================================== //
 
