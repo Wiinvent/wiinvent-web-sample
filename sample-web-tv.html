@@ -8,6 +8,9 @@
   <link href="https://unpkg.com/video.js/dist/video-js.css" rel="stylesheet">
   <script src="https://unpkg.com/video.js/dist/video.js"></script>
   <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"/>
 
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/2.5.12/controls.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/2.5.12/shaka-player.ui.js"></script>
@@ -32,7 +35,7 @@
   </video>
 </div>
 
-<script src="https://wiinvent.tv/sdk/wii-sdk-1.5.4.js">
+<script src="https://wiinvent.tv/sdk/wii-sdk-1.5.5.js">
 </script>
 
 <script>
@@ -60,7 +63,7 @@
   player.on('sourceset', () => wiiSdk.destroy())
   player.on('resize', () => wiiSdk.changeSize())
   window.addEventListener("message", function (e) {
-    if (['REQUEST', 'LOADED', 'ERROR', 'START', 'PAUSED', 'RESUMED', 'CLICK', 'IMPRESSION', 'SKIPPED', 'COMPLETE', 'DESTROY'].includes(e.data.type)) {
+    if (['REQUEST', 'LOADED', 'START', 'PAUSED', 'RESUMED', 'ERROR', 'PLAYER_ERROR', 'CLICK', 'IMPRESSION', 'SKIPPED', 'COMPLETE', 'DESTROY', 'FULLSCREEN'].includes(e.data.type)) {
       console.log('mmmm', e)
     }
   })

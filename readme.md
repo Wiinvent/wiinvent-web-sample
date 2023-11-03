@@ -1,7 +1,7 @@
 SDK:
 
 ````javascript
-<script src="https://wiinvent.tv/sdk/wii-sdk-1.5.4.js"></script>
+<script src="https://wiinvent.tv/sdk/wii-sdk-1.5.5.js"></script>
 ````
 
 1. Code Instream Sample:
@@ -30,7 +30,7 @@ player.one('loadeddata', () => wiiSdk.start())
 player.on('sourceset', () => wiiSdk.destroy())
 player.on('resize', () => wiiSdk.changeSize())
 window.addEventListener("message", function (e) {
-  if (['REQUEST', 'LOADED', 'ERROR', 'START', 'PAUSED', 'RESUMED', 'CLICK', 'IMPRESSION', 'SKIPPED', 'COMPLETE', 'DESTROY'].includes(e.data.type)) {
+  if (['REQUEST', 'LOADED', 'START', 'PAUSED', 'RESUMED', 'ERROR', 'PLAYER_ERROR', 'CLICK', 'IMPRESSION', 'SKIPPED', 'COMPLETE', 'DESTROY', 'FULLSCREEN'].includes(e.data.type)) {
     console.log('mmmm', e)
   }
 })
