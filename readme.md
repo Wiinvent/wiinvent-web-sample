@@ -1,31 +1,32 @@
 SDK:
 
 ````javascript
-<script src="https://wiinvent.tv/sdk/wii-sdk-1.5.6.js"></script>
+<script src="https://wiinvent.tv/sdk/wii-sdk-1.5.27.js"></script>
 ````
 
 1. Code Instream Sample:
 
 ```javascript
-const player = videojs('videojs-player');
-const wiiSdk = new WI.InstreamSdk({
+var wiiSdk = [];
+const player = videojs("videojs-player");
+
+wiiSdk = new WI.InstreamSdk({
   env: WI.Environment.SANDBOX,
   tenantId: 14,
   deviceType: WI.DeviceType.WEB,
-  domId: 'videoId',
-  player: player,
-  playerType: 'VIDEO',
-  channelId: '2',
-  streamId: '604468',
-  partnerSkipOffset: 5,
+  domId: "videoId",
+  channelId: "2",
+  streamId: "9999",
+  partnerSkipOffset: 0,
   vastLoadTimeout: 10,
   mediaLoadTimeout: 10,
   bufferingVideoTimeout: 15,
   alwaysCustomSkip: true,
   isAutoRequestFocus: false,
-  bitrate: 1024  
-});
-
+  bitrate: 1024,
+  skipText: "Skip ads after {0} seconds",
+  skippableText: "Skip ads"
+})
 player.one('loadeddata', () => wiiSdk.start())
 player.on('sourceset', () => wiiSdk.destroy())
 player.on('resize', () => wiiSdk.changeSize())
