@@ -1,7 +1,7 @@
 SDK:
 
 ````javascript
-<script src="https://wiinvent.tv/sdk/wii-sdk-1.6.4.js"></script>
+<script src="https://wiinvent.tv/sdk/wii-sdk-1.6.6.js"></script>
 ````
 
 1. Code Instream Sample:
@@ -90,8 +90,7 @@ const wiinsdk = new WI.OverlaySdk({
 | tranId                | TranId                                                    |   string |
 | category              | Category                                                  |   string |
 | keyword               | Keyword                                                   |   string |
-| age                   | Age                                                       |   string |
-| gender                | Gender                                                    |   number |
+| age                   | Age                                                       |   number |
 
 4. Constant
 
@@ -101,6 +100,7 @@ const wiinsdk = new WI.OverlaySdk({
 | deviceType  | WI.DeviceType.TV <br/> WI.DeviceType.WEB                                                         |  
 | env         | WI.Environment.SANDBOX <br/> WI.Environment.PRODUCTION                                           |   
 | contentType | WI.ContentType.VOD <br/>WI.ContentType.LIVESTREAM                                                | 
+| contentType | WI.Gender.MALE <br/>WI.Gender.FEMALE <br/>WI.Gender.OTHER <br/>WI.Gender.NONE                    | 
 
 5. Ads Callback
 
