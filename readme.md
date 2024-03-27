@@ -24,10 +24,6 @@ wiiSdk = new WI.InstreamSdk({
   keyword: "1, 2",
   age: "20",
   gender: "MALE",
-  manufacturer: "OPPO",
-  model: "CPH2159",
-  osName: "Android",
-  osVersion: "13",
   partnerSkipOffset: 0,
   vastLoadTimeout: 10,
   mediaLoadTimeout: 10,
@@ -90,6 +86,12 @@ const wiinsdk = new WI.OverlaySdk({
 | alwaysCustomSkip      | Decided to use custom skip button                         |  boolean |
 | isAutoRequestFocus    | Decided to focus on skip button after skip time           |  boolean |
 | bitrate               | Bitrate                                                   |   number |
+| title                 | Title                                                     |   string |
+| tranId                | TranId                                                    |   string |
+| category              | Category                                                  |   string |
+| keyword               | Keyword                                                   |   string |
+| age                   | Age                                                       |   string |
+| gender                | Gender                                                    |   number |
 
 4. Constant
 
