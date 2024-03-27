@@ -86,11 +86,12 @@ const wiinsdk = new WI.OverlaySdk({
 | alwaysCustomSkip      | Decided to use custom skip button                         |  boolean |
 | isAutoRequestFocus    | Decided to focus on skip button after skip time           |  boolean |
 | bitrate               | Bitrate                                                   |   number |
-| title                 | Title                                                     |   string |
-| tranId                | TranId                                                    |   string |
-| category              | Category                                                  |   string |
-| keyword               | Keyword                                                   |   string |
-| age                   | Age                                                       |   number |
+| title                   | Tiêu đề của nội dung                                    |   string |
+| tranId                  | Thông tin theo yêu cẩu của đối tác                      |   string |
+| category                | Danh sách danh mục - được ngăn cách bởi dấu ,           |   string |
+| keyword                 | Từ khoá tìm kiếm của nội dung (nếu có)                  |   string |
+| age                     | Tuổi (Nếu có)                                           |   number |
+| gender                  | Giới tính (nếu có)                                      | constant |
 
 4. Constant
 
