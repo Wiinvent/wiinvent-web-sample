@@ -23,7 +23,7 @@ wiiSdk = new WI.InstreamSdk({
   category: "1, 2",
   keyword: "1, 2",
   age: "20",
-  gender: "MALE",
+  gender: WI.Gender.MALE,
   partnerSkipOffset: 0,
   vastLoadTimeout: 10,
   mediaLoadTimeout: 10,
