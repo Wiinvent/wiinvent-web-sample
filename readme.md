@@ -16,7 +16,7 @@ wiiSdk = new WI.InstreamSdk({
   deviceType: WI.DeviceType.WEB,
   domId: "videoId",
   channelId: "2",
-  streamId: "9999",
+  streamId: "1999",
   contentType: "VOD",
   title: "noi dung 1",
   transId: "111",
