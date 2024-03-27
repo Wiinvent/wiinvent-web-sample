@@ -100,7 +100,7 @@ const wiinsdk = new WI.OverlaySdk({
 | deviceType  | WI.DeviceType.TV <br/> WI.DeviceType.WEB                                                         |  
 | env         | WI.Environment.SANDBOX <br/> WI.Environment.PRODUCTION                                           |   
 | contentType | WI.ContentType.VOD <br/>WI.ContentType.LIVESTREAM                                                | 
-| contentType | WI.Gender.MALE <br/>WI.Gender.FEMALE <br/>WI.Gender.OTHER <br/>WI.Gender.NONE                    | 
+| gender      | WI.Gender.MALE <br/>WI.Gender.FEMALE <br/>WI.Gender.OTHER <br/>WI.Gender.NONE                    | 
 
 5. Ads Callback
 
