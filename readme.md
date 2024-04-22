@@ -15,15 +15,16 @@ wiiSdk = new WI.InstreamSdk({
   tenantId: 14,
   deviceType: WI.DeviceType.WEB,
   domId: "videoId",
-  channelId: "2",
-  streamId: "1999",
-  contentType: WI.ContentType.VIDEO,
-  title: "noi dung 1",
-  transId: "111",
-  category: "1, 2",
-  keyword: "1, 2",
-  age: "20",
-  gender: WI.Gender.MALE,
+  channelId: "2", //danh sách id của category & cách nhau bằng dấu ","
+  streamId: "1999", // id nội dung
+  contentType: WI.ContentType.VIDEO, //content type FIRM | TV | VIDEO
+  title: "noi dung 1", // tiêu đề nội dung
+  transId: "111", //mã giao dịch tạo từ server đối tác - client liên hệ server để biết thêm thông tin
+  category: "1, 2", // danh sach tiêu đề của category & cách nhau bằng dấu ","
+  keyword: "1, 2", //từ khoá nếu có | để "" nếu ko có
+  age: "20", // tuổi , nếu không có thì để 0
+  gender: WI.Gender.MALE, //giới tính nếu không có thì set NONE
+  uid20: "", // unified id 2.0, nếu không có thì set ""
   partnerSkipOffset: 0,
   vastLoadTimeout: 10,
   mediaLoadTimeout: 10,

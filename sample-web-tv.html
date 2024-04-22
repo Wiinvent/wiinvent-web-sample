@@ -25,7 +25,7 @@
   </video>
 </div>
 
-<script src="https://wiinvent.tv/sdk/wii-sdk-1.7.0.js">
+<script src="https://wiinvent.tv/sdk/wii-sdk-1.7.1.js">
 </script>
 
 <script>
@@ -37,15 +37,16 @@
     tenantId: 14,
     deviceType: WI.DeviceType.WEB,
     domId: "videoId",
-    channelId: "2",
-    streamId: "1999",
-    contentType: WI.ContentType.VIDEO,
-    title: "noi dung 1",
-    transId: "111",
-    category: "1, 2",
-    keyword: "1, 2",
-    age: "20",
-    gender: WI.Gender.MALE,
+    channelId: "2", //danh sách id của category & cách nhau bằng dấu ","
+    streamId: "1999", // id nội dung
+    contentType: WI.ContentType.VIDEO, //content type FIRM | TV | VIDEO
+    title: "noi dung 1", // tiêu đề nội dung
+    transId: "111", //mã giao dịch tạo từ server đối tác - client liên hệ server để biết thêm thông tin
+    category: "1, 2", // danh sach tiêu đề của category & cách nhau bằng dấu ","
+    keyword: "1, 2", //từ khoá nếu có | để "" nếu ko có
+    age: "20", // tuổi , nếu không có thì để 0
+    gender: WI.Gender.MALE, //giới tính nếu không có thì set NONE
+    uid20: "", // unified id 2.0, nếu không có thì set ""
     partnerSkipOffset: 0,
     vastLoadTimeout: 10,
     mediaLoadTimeout: 10,
@@ -64,31 +65,31 @@
     }
   })
 
-  const wiinsdk = new WI.OverlaySdk({
-    domId: "videojs-player",
-    playerType: WI.PlayerType.VIDEO_JS,
-    channelId: '2',
-    streamId: '604468',
-    deviceType: WI.DeviceType.WEB,
-    env: WI.Environment.SANDBOX,
-    contentType: WI.ContentType.VOD,
-    thirdPartyToken: 'JWT ',
-    tenantId: 14,
+  // const wiinsdk = new WI.OverlaySdk({
+  //   domId: "videojs-player",
+  //   playerType: WI.PlayerType.VIDEO_JS,
+  //   channelId: '2',
+  //   streamId: '604468',
+  //   deviceType: WI.DeviceType.WEB,
+  //   env: WI.Environment.SANDBOX,
+  //   contentType: WI.ContentType.VOD,
+  //   thirdPartyToken: 'JWT ',
+  //   tenantId: 14,
+  //
+  //   onTokenExpire: function () {
+  //     //token expire
+  //   },
+  //   onUserLogin: function () {
+  //     //require login
+  //   }
+  // })
 
-    onTokenExpire: function () {
-      //token expire
-    },
-    onUserLogin: function () {
-      //require login
-    }
-  })
-
-  player.one('play', () => wiinsdk.start())
-  player.on('ended', () => wiinsdk.stop());
-  player.on('pause', () => wiinsdk.hide());
-  player.on('play', () => wiinsdk.show())
-  player.on('error', () => wiinsdk.stop());
-  player.on('timeupdate', () => wiinsdk.timeUpdate(player.currentTime()));
+  // player.one('play', () => wiinsdk.start())
+  // player.on('ended', () => wiinsdk.stop());
+  // player.on('pause', () => wiinsdk.hide());
+  // player.on('play', () => wiinsdk.show())
+  // player.on('error', () => wiinsdk.stop());
+  // player.on('timeupdate', () => wiinsdk.timeUpdate(player.currentTime()));
 </script>
 
 
