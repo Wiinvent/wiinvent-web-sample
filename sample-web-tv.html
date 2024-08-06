@@ -25,7 +25,7 @@
   </video>
 </div>
 
-<script src="https://wiinvent.tv/sdk/wii-sdk-1.7.4.js">
+<script src="https://wiinvent.tv/sdk/wii-sdk-1.7.5.js">
 </script>
 
 <script>
@@ -55,7 +55,8 @@
     isAutoRequestFocus: false,
     bitrate: 1024,
     skipText: "Skip ads after {0} seconds",
-    skippableText: "Skip ads"
+    skippableText: "Skip ads",
+    segments: '1,2,3,11,22,33'
   })
   player.one("play", () => wiiSdk.start())
   
