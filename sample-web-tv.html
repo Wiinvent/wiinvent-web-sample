@@ -1,99 +1,303 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <title>Wiinvent Web</title>
-  <link href="https://unpkg.com/video.js/dist/video-js.css" rel="stylesheet">
-  <script src="https://unpkg.com/video.js/dist/video.js"></script>
-  <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
-
-  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/2.5.12/controls.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/2.5.12/shaka-player.ui.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/3.0.0/shaka-player.compiled.js"></script>
-  <script defer src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"></script>
-
+  <meta charset="UTF-8">
+  <title>Sample In-Stream Ads with Custom Skip Button</title>
+  <style>
+    body { font-family: sans-serif; background-color: #f0f0f0; }
+    .video-container {
+      position: relative;
+      width: 80%;
+      max-width: 800px;
+      margin: 40px auto;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    video { width: 100%; display: block; }
+    #wiinvent_ads_container_id {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      /* pointer-events are enabled by the ad SDK when active */
+    }
+    .controls {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      color: white;
+      transition: opacity 0.3s;
+    }
+    .controls.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .controls button, .controls input[type="range"] { margin-right: 10px; }
+    #progress { flex: 1; }
+  </style>
 </head>
+<body>
 
-<body style="margin: 0; " cz-shortcut-listen="true">
-
-<div id="videoId">
-  <video id="videojs-player" controls playsinline muted
-         class="video-js vjs-default-skin vjs-big-play-centered wrap">
-    <source src="http://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
+<div class="video-container">
+  <video id="content-video">
+    <source src="https://s0.2mdn.net/4253510/google_ddm_animation_480P.mp4" type="video/mp4">
   </video>
+  
+  <div id="wiinvent_ads_container_id"></div>
+  
+  <div class="controls">
+    <button id="play-pause">Play</button>
+    <input type="range" id="progress" value="0" min="0" max="100">
+    <span id="time">0:00 / 0:00</span>
+  </div>
 </div>
 
-<script src="https://wiinvent.tv/sdk/wii-sdk-1.7.5.js">
-</script>
+<script src="https://wiinvent.tv/sdk/tv/wii-sdk-3.0.3.js"></script>
 
 <script>
-  var wiiSdk = [];
-  const player = videojs("videojs-player");
-
-  wiiSdk = new WI.InstreamSdk({
-    env: WI.Environment.SANDBOX,
-    tenantId: 14,
-    deviceType: WI.DeviceType.WEB,
-    domId: "videoId",
-    channelId: "2", // danh sách id của category của nội dung & cách nhau bằng dấu ","
-    streamId: "1966", // id nội dung
-    contentType: WI.ContentType.VIDEO, //content type FIRM | TV | VIDEO
-    title: "noi dung 1", // tiêu đề nội dung
-    transId: "111", //mã giao dịch tạo từ server đối tác - client liên hệ server để biết thêm thông tin
-    category: "1, 2", // danh sach tiêu đề category của nội dung & cách nhau bằng dấu ","
-    keyword: "1, 2", //từ khoá nếu có | để "" nếu ko có
-    age: "20", // tuổi , nếu không có thì để 0
-    gender: WI.Gender.MALE, //giới tính nếu không có thì set NONE
-    uid20: "", // unified id 2.0, nếu không có thì set ""
-    partnerSkipOffset: 0,
-    vastLoadTimeout: 10,
-    mediaLoadTimeout: 10,
-    bufferingVideoTimeout: 15,
-    alwaysCustomSkip: true,
-    isAutoRequestFocus: false,
-    bitrate: 1024,
-    skipText: "Skip ads after {0} seconds",
-    skippableText: "Skip ads",
-    segments: '1,2,3,11,22,33'
-  })
-  player.one("play", () => wiiSdk.start())
+  // --- Player Elements ---
+  const video = document.getElementById('content-video');
+  const playPauseBtn = document.getElementById('play-pause');
+  const adsContainer = document.getElementById('wiinvent_ads_container_id');
+  const controls = document.querySelector('.controls');
   
-  window.addEventListener("message", function (e) {
-    if (['REQUEST', 'LOADED', 'START', 'PAUSED', 'RESUMED', 'ERROR', 'PLAYER_ERROR', 'CLICK', 'IMPRESSION', 'SKIPPED', 'COMPLETE', 'DESTROY', 'FULLSCREEN'].includes(e.data.type)) {
-      console.log('mmmm', e)
+  let wiiSdk = null;
+  let adsInitialized = false;
+  let skipButton = null; // Keep a reference to the skip button
+  let isAdPlaying = false;
+  // --- Main Player Logic ---
+  playPauseBtn.addEventListener('click', () => {
+    if (video.paused || video.ended) video.play();
+    else video.pause();
+  });
+  
+  video.addEventListener('play', () => {
+    playPauseBtn.textContent = 'Pause';
+    if (!adsInitialized) {
+      handleAds();
+      adsInitialized = true;
     }
-  })
+  });
+  
+  video.addEventListener('pause', () => {
+    playPauseBtn.textContent = 'Play';
+  });
+  
+  // --- SDK ENUMS SETUP (FIXED) ---
+  
+  //   // Create a single global object to hold all SDK enums.
+  //   const WI = {};
+  
+  //   WI.EventType = {
+  //     'REQUEST': 'REQUEST', 'START': 'START', 'IMPRESSION': 'IMPRESSION',
+  //     "CLICK": "CLICK", 'COMPLETE': 'COMPLETE', "SKIPPED": "SKIPPED",
+  //     'ERROR': 'ERROR', /* ...and so on */
+  //   };
+  
+  //   WI.Environment = {
+  //     'SANDBOX': 'SANDBOX', 'PRODUCTION': "PRODUCTION",
+  //     'VIETTEL_PRODUCTION': "VIETTEL_PRODUCTION",
+  //   };
+  
+  //   WI.DeviceType = { 'PHONE': 'PHONE', 'TV': 'TV', 'WEB': 'WEB' };
+  
+  //   WI.ContentType = {
+  //     'VOD': "VOD", "LIVE_STREAM": "LIVE_STREAM", "VIDEO": "VIDEO",
+  //   };
+  
+  //   WI.Gender = { 'MALE': 'MALE', 'FEMALE': 'FEMALE', 'NONE': 'NONE' };
+  
+  // --- SDK Initialization ---
+  function handleAds() {
+    const sdkConfig = {
+      domId: "wiinvent_ads_container_id",
+      liveTv: false,
+      env: WI.Environment.SANDBOX,
+      tenantId: 14,
+      deviceType: WI.DeviceType.WEB,
+      channelId: "115376",
+      streamId: "23203", // 23173, 23203
+      adId: "1999",
+      contentType: WI.ContentType.VIDEO,
+      title: "noi dung 1",
+      transId: "111",
+      category: "1, 2",
+      keyword: "1, 2",
+      age: "20",
+      gender: WI.Gender.MALE,
+      uid20: "test",
+      manufacturer: "",
+      model: "",
+      osName: "",
+      osVersion: "",
+      partnerSkipOffset: 2,
+      vastLoadTimeout: 5,
+      mediaLoadTimeout: 10,
+      bufferingVideoTimeout: 10,
+      alwaysCustomSkip: true,
+      isAutoRequestFocus: false,
+      bitrate: 1024,
+      skipText: "Skip ads after {0} seconds",
+      skippableText: "Skip ads",
+      isUsePartnerSkipButton: true,
+      segments: "1,2,3,11,22,33"
+    };
+    // STEP 1: init Wii SDK
+    window.wiiSdk = new WI.InstreamSdk(sdkConfig);
+    // STEP 2: start SDK
+    window.wiiSdk.start();
+    // Optional STEP 2.1: wiiSdk.setDuration(duration)
+    window.wiiSdk.setDuration(video.duration);
+    
+    // LOOP: Update currentTime content
+    const timer = setInterval(() => {
+      if (!window.wiiSdk || video.paused || video.ended) {
+        return;
+      }
+      // console.log('[CLIENT] Updating SDK with current time:', video.currentTime);
+      window.wiiSdk.updateTime(video.currentTime, video.duration);
+    }, 200);
+  }
+  
+  // --- Event Listening & UI Control ---
+  window.addEventListener("message", function (event) {
+    if (!event.data || !event.data.type) return;
+    
+    const eventType = event.data.type;
+    console.log(`[CLIENT] Received ad event: ${eventType}`, event.data);
+    
+    // Ad break end events
+    const adBreakEndEvents = ['PAUSE_CONTENT', 'COMPLETE', 'SKIPPED', 'ERROR', 'ALL_ADS_COMPLETED', 'END'];
+    
+    // STEP 6: Event: PAUSE_CONTENT
+    if (eventType === 'PAUSE_CONTENT') {
+      // Ad has loaded, we can pause content if not already paused
+      // STEP 7: Pause content video
+      if (!video.paused) video.pause();
+      console.log('[CLIENT] Ad break starting, content paused.', window.wiiSdk);
+      // STEP 8: Callbacl playAd to trigger ad break
+      window.wiiSdk.playAd(); // Trigger the ad break to play
+    }
+    
+    // STEP 14: Event: START
+    if (eventType === 'START') {
+      // Hide content controls and render the custom skip button
+      controls.classList.add('hidden');
+      // STEP 15: Call renderSkipButton function
+      renderSkipButton(event.data); // Pass ad data to the function
+      isAdPlaying = true;
+    }
+    if (eventType === 'ALL_ADS_COMPLETED') {
+      // Show content controls and destroy the custom skip button
+      console.log('[CLIENT] Ad break ended, resuming content.', isAdPlaying, video.paused);
+      if (isAdPlaying && video.paused) {
+        video.play();
+        controls.classList.remove('hidden');
+        destroySkipButton();
+        isAdPlaying = false;
+      }
+    }
+  });
+  
+  // --- Custom Skip Button Logic ---
+  
+  /**
+   * Renders the custom skip button based on ad data.
+   * @param {object} adData - Data from the SDK's START event.
+   */
+  function renderSkipButton(adData) {
+    // Prevent creating multiple buttons
+    if (skipButton) destroySkipButton();
+    
+    skipButton = document.createElement('button');
+    skipButton.style.cssText = `
+        background-color: #000000; color: white; border: none; cursor: not-allowed; display: flex;
+        align-items: center; justify-content: center; position: absolute; bottom: 20px; right: 20px;
+        visibility: hidden; border: 1px solid rgba(255,255,255,.5); font-size: 1.1rem; line-height: 1.6rem;
+        font-family: "Inter",Tahoma,Geneva,Verdana,sans-serif; font-weight: 700; border-radius: .3rem;
+        padding: .7rem; z-index: 1000;
+      `;
+    adsContainer.appendChild(skipButton);
+    
+    // Use dynamic data from the event, with defaults
+    const isSkippable = adData.skippable !== false; // Skippable by default
+    let countdown = adData.skipOffset || 5;
+    const type = isSkippable ? 'skip' : 'nonSkip';
+    
+    const text = {
+      skip: `Bỏ qua sau countdown`,
+      skipDone: 'Bỏ qua quảng cáo',
+      nonSkip: `Quảng cáo kết thúc sau countdown`
+    };
+    
+    if (isSkippable) {
+      skipButton.disabled = true;
+    }
+    
+    const timer = setInterval(() => {
+      if (!skipButton) {
+        clearInterval(timer);
+        return;
+      }
+      skipButton.style.visibility = 'visible';
+      skipButton.innerHTML = text[type].replace('countdown', countdown);
+      
+      if (isSkippable && countdown <= 0) {
+        skipButton.disabled = false;
+        skipButton.style.cursor = 'pointer';
+        skipButton.innerHTML = text.skipDone;
+        clearInterval(timer); // Stop countdown once skippable
+      }
+      if (!isSkippable && countdown <= 0) {
+        destroySkipButton(); // Auto-remove non-skippable button when countdown ends
+        clearInterval(timer);
+      }
+      countdown -= 1;
+    }, 1000);
+    
+    // STEP 16: Handle skip button click
+    skipButton.addEventListener('click', () => {
+      if (!skipButton.disabled) {
+        // IMPORTANT: The SDK must have a public .skip() method.
+        // STEP 17: Call SDK skip method on button click
+        window.wiiSdk.skip();
+        // The SDK will fire a SKIPPED event, which the main listener will catch to clean up UI.
+      }
+    });
+  }
+  
+  function destroySkipButton() {
+    if (skipButton) {
+      skipButton.remove();
+      skipButton = null;
+    }
+  }
+  
+  // --- Standard Player Progress Bar (MODIFIED) ---
+  video.addEventListener('timeupdate', () => {
+    // MODIFIED: Check the flag. If an ad is playing, do not update the progress bar.
+    if (isAdPlaying || isNaN(video.duration)) {
+      return;
+    }
+    
+    const progressPercent = (video.currentTime / video.duration) * 100;
+    progress.value = progressPercent;
+    
+    const formatTime = (seconds) => {
+      const min = Math.floor(seconds / 60);
+      const sec = Math.floor(seconds % 60).toString().padStart(2, '0');
+      return `${min}:${sec}`;
+    };
+    time.textContent = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
+  });
+  
+  progress.addEventListener('input', () => {
+    if (isAdPlaying || isNaN(video.duration)) return;
+    const seekTime = (progress.value / 100) * video.duration;
+    video.currentTime = seekTime;
+  });
 
-  // const wiinsdk = new WI.OverlaySdk({
-  //   domId: "videojs-player",
-  //   playerType: WI.PlayerType.VIDEO_JS,
-  //   channelId: '2',
-  //   streamId: '604468',
-  //   deviceType: WI.DeviceType.WEB,
-  //   env: WI.Environment.SANDBOX,
-  //   contentType: WI.ContentType.VOD,
-  //   thirdPartyToken: 'JWT ',
-  //   tenantId: 14,
-  //
-  //   onTokenExpire: function () {
-  //     //token expire
-  //   },
-  //   onUserLogin: function () {
-  //     //require login
-  //   }
-  // })
-
-  // player.one('play', () => wiinsdk.start())
-  // player.on('ended', () => wiinsdk.stop());
-  // player.on('pause', () => wiinsdk.hide());
-  // player.on('play', () => wiinsdk.show())
-  // player.on('error', () => wiinsdk.stop());
-  // player.on('timeupdate', () => wiinsdk.timeUpdate(player.currentTime()));
 </script>
-
-
 </body>
-
 </html>
