@@ -60,7 +60,7 @@
   </div>
 </div>
 
-<script src="https://wiinvent.tv/sdk/wii-sdk-2.0.0.js"></script>
+<script src="https://wiinvent.tv/sdk/wii-sdk-2.0.1.js"></script>
 
 <script>
   // --- Player Elements ---
@@ -133,7 +133,7 @@
       tenantId: 14,
       deviceType: WI.DeviceType.PC,
       channelId: "115376",
-      streamId: "23173", // 23173, 23203
+      streamId: "23203", // 23173, 23203
       adId: "1999",
       contentType: WI.ContentType.VIDEO,
       title: "noi dung 1",
@@ -147,14 +147,13 @@
       model: "",
       osName: "",
       osVersion: "",
-      partnerSkipOffset: 2,
+      partnerSkipOffset: 7,
       vastLoadTimeout: 5,
       mediaLoadTimeout: 10,
       bufferingVideoTimeout: 10,
       alwaysCustomSkip: true,
       isAutoRequestFocus: false,
       bitrate: 1024,
-      skipOffset: 5,
       skipText: "`Bỏ qua sau ${countdown} giây`",
       skippableText: "`Bỏ qua quảng cáo`",
       nonSkippableText: "`Quảng cáo kết thúc sau ${countdown} giây`",
@@ -196,7 +195,8 @@
       if (!video.paused) video.pause();
       console.log('[CLIENT] Ad break starting, content paused.', window.wiiSdk);
       // STEP 8: Callback playAd to trigger ad break
-      window.wiiSdk.playAd(); // Trigger the ad break to play
+      console.log('[CLIENT] Triggering ad break playback.', video.muted);
+      window.wiiSdk.playAd(video.muted); // Trigger the ad break to play
     }
     
     // STEP 14: Event: START
