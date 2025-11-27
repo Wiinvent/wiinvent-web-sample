@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>AdSDK Banner Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      line-height: 1.5;
+      background: #f5f5f5;
+    }
+    
+    h1 {
+      margin-bottom: 16px;
+    }
+    
+    .panel {
+      border: 1px solid #ddd;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      background: #fff;
+    }
+    
+    .input_group {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+    }
+    
+    .input_each {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      
+      input {
+        padding: 4px;
+      }
+    }
+    
+    .button_group {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    
+    #ad-slot {
+      width: 100%;
+      height: 245px;
+      border: 1px dashed #aaa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fafafa;
+      position: relative;
+    }
+    
+    .log {
+      height: 180px;
+      overflow: auto;
+      background: #111;
+      color: #eee;
+      padding: 8px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 13px;
+    }
+    
+    .controls button {
+      margin-right: 8px;
+      margin-bottom: 6px;
+    }
+    
+    .muted {
+      margin-top: 8px;
+      color: #666;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+<h1>AdSDK Demo</h1>
+
+<div class="panel">
+  <h3>1) Khung quảng cáo</h3>
+  <div id="ad-slot" style="
+    width:100%;height:245px;border:1px dashed #aaa;
+    display:flex;align-items:center;justify-content:center;
+    background:#fafafa;position:relative;opacity: 0">
+    Ad slot
+  </div>
+  
+  <div class="muted">Element ID: <code>ad-slot</code></div>
+  <div class="muted" id="slot-info"></div>
+
+</div>
+
+<div class="panel">
+  <h3>2) Cấu hình quảng cáo</h3>
+  <div class="input_group">
+    <div class="input_each">
+      <label>Stream ID:</label><br/>
+      <input id="input-stream" type="text" style="width:100%;margin-bottom:8px;" placeholder="VD: 123456"/>
+    </div>
+    
+    <div class="input_each">
+      <label>Channel ID:</label><br/>
+      <input id="input-channel" type="text" style="width:100%;margin-bottom:8px;" placeholder="VD: 123456"/>
+    </div>
+    
+    <div class="input_each">
+      <label>Position ID:</label><br/>
+      <input id="input-position" type="text" style="width:100%;margin-bottom:8px;" placeholder="VD: homepage1"
+             value="homepage1"/>
+    </div>
+    
+    <div class="input_each">
+      <label>Banner Type:</label><br/>
+      <select id="select-banner" style="width:100%;margin-bottom:12px;">
+        <option value="LARGE_BANNER" selected>LARGE_BANNER</option>
+        <option value="MEDIUM_BANNER">MEDIUM_BANNER</option>
+      </select>
+    </div>
+  </div>
+  <div class="button_group">
+    <button id="btn-init">Init</button>
+    <button id="btn-start">Start</button>
+    <button id="btn-destroy">Dismiss</button>
+    <button id="btn-welcome">Test Welcome</button>
+  </div>
+</div>
+
+<div class="panel">
+  <h3>3) Video demo với banner</h3>
+  <div style="position:relative;width:100%;height:550px;background:#000;">
+    <video id="video-demo" width="100%" height="100%" controls style="display:block;">
+      <source src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+      Your browser does not support HTML5 video.
+    </video>
+    
+    <div id="video-ad-slot" style="
+      position:absolute;
+      bottom:200px;
+      left:50%;
+      transform:translateX(-50%);
+      width:780px;
+      height:100px;
+      pointer-events:none;
+      z-index:10;
+      background:#fff;
+      border:1px solid #ccc;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      opacity:0;
+      transition: opacity 0.3s;
+    ">
+    </div>
+  </div>
+</div>
+
+<div class="panel">
+  <h3>4) Event log</h3>
+  <div id="log" class="log"></div>
+</div>
+
+<!-- Load SDK -->
+<script src="https://cdn.jsdelivr.net/gh/KVA24/banner-ad-sdk@1.1.0/dist/ad-sdk.min.js"></script>
+
+<script>
+  (function () {
+    const logEl = document.getElementById('log');
+    
+    function log(msg, data) {
+      const time = new Date().toLocaleTimeString();
+      const line = document.createElement('div');
+      line.style.whiteSpace = 'pre-wrap';
+      line.textContent = `[${time}] ${msg}${data ? '\n' + data : ''}`;
+      logEl.insertBefore(line, logEl.firstChild);
+      console.log('[LOG]', msg, data || '');
+    }
+    
+    function attachSDKEvents(sdk) {
+      if (!sdk) return;
+      const events = ['start', 'loaded', 'rendered', 'skip', 'click', 'dismiss', 'destroy', 'error'];
+      events.forEach(ev => sdk.on(ev, data => {
+        log(`sdk.on(${ev})`, data)
+        switch (data.domId) {
+          case 'ad-slot':
+            switch (ev) {
+              case 'rendered':
+                const el = document.getElementById("ad-slot");
+                if (el) {
+                  el.style.opacity = '1';
+                }
+                break;
+              default:
+                return
+            }
+            break;
+          case 'video-ad-slot':
+            switch (ev) {
+              case 'rendered':
+                const el = document.getElementById("video-ad-slot");
+                if (el) {
+                  el.style.pointerEvents = 'auto';
+                  el.style.opacity = '1';
+                  console.log("Banner displayed (rendered OK)");
+                }
+                break;
+              case 'skip':
+                const el2 = document.getElementById("video-ad-slot");
+                if (!el2) return;
+                el2.style.pointerEvents = 'none';
+                el2.style.opacity = '0';
+                window.sdk.dismiss("video-ad-slot");
+                break;
+              default:
+                return
+            }
+            break;
+          default:
+            return
+        }
+      }));
+    }
+    
+    document.getElementById('btn-init').addEventListener('click', () => {
+      const streamId = document.getElementById('input-stream').value.trim();
+      const channelId = document.getElementById('input-channel').value.trim();
+      
+      window.sdk = new AdSDK({
+        env: AdSDK.ENV.SANDBOX,
+        type: AdSDK.TYPE.DISPLAY,
+        debug: true,
+        tenantId: 14,
+        streamId: streamId,
+        channelId: channelId,
+        title: "noi dung 1",
+        transId: "111",
+        category: "1, 2",
+        keyword: "1, 2",
+        age: "20",
+        gender: AdSDK.GENDER.MALE,
+        uid20: "",
+      });
+      
+      window.welcomeSdk = new AdSDK({
+        env: AdSDK.ENV.SANDBOX,
+        type: AdSDK.TYPE.WELCOME,
+        debug: true,
+        tenantId: 14,
+        streamId: streamId,
+        channelId: channelId,
+        title: "noi dung 1",
+        transId: "111",
+        category: "1, 2",
+        keyword: "1, 2",
+        age: "20",
+        gender: AdSDK.GENDER.MALE,
+        uid20: "",
+      });
+      
+      attachSDKEvents(window.sdk);
+      attachSDKEvents(window.welcomeSdk);
+      log('SDK initialized manually');
+    })
+    
+    document.getElementById('btn-start').addEventListener('click', () => {
+      const el = document.getElementById("ad-slot");
+      if (el) {
+        el.style.opacity = '0';
+      }
+      
+      const positionId = document.getElementById('input-position').value.trim();
+      const bannerType = document.getElementById('select-banner').value;
+      
+      if (!window.sdk) return log('SDK not ready. Call init first.');
+      window.sdk.start("ad-slot", "DISPLAY", bannerType, positionId);
+      document.getElementById('slot-info').textContent =
+        `Stream ID: ${streamId || "null"}, Channel ID: ${channelId || "null"}, Position ID: ${positionId}, Banner: ${bannerType}`;
+      
+      log('sdk.start() called', window.sdk);
+    });
+    
+    document.getElementById('btn-destroy').addEventListener('click', () => {
+      if (!window.sdk) return log('SDK not ready. Call init first.');
+      window.sdk.dismiss("ad-slot");
+      log('sdk.dismiss() called');
+    });
+    
+    document.getElementById('btn-welcome').addEventListener('click', () => {
+      if (!window.sdk) return log('SDK not ready. Call init first.');
+      window.welcomeSdk.start()
+      log('welcomeSdk.start() called');
+    })
+  })();
+</script>
+
+<script>
+  (function () {
+    const video = document.getElementById('video-demo');
+    const adSlotId = "video-ad-slot";
+    
+    let isSeeking = false;
+    let pauseTimeout = null;
+    
+    const showBanner = () => {
+      if (!window.sdk) return;
+      const el = document.getElementById(adSlotId);
+      if (!el) return;
+      window.sdk.start(adSlotId, "OVERLAY", "PAUSE_BANNER");
+      console.log('Banner shown (video paused)');
+    };
+    
+    const hideBanner = () => {
+      if (!window.sdk) return;
+      const el = document.getElementById(adSlotId);
+      if (!el) return;
+      el.style.pointerEvents = 'none';
+      el.style.opacity = '0';
+      window.sdk.dismiss(adSlotId);
+      console.log('Banner hidden (video playing or closed)');
+    };
+    
+    // --- Seeking detection ---
+    video.addEventListener('seeking', () => {
+      isSeeking = true;
+    });
+    
+    video.addEventListener('seeked', () => {
+      setTimeout(() => {
+        isSeeking = false;
+      }, 100);
+    });
+    
+    // --- Pause detection without seek ---
+    video.addEventListener('pause', () => {
+      if (isSeeking) return;
+      
+      clearTimeout(pauseTimeout);
+      pauseTimeout = setTimeout(() => {
+        if (!video.paused || isSeeking) return;
+        showBanner();
+      }, 150);
+    });
+    
+    video.addEventListener('play', hideBanner);
+    video.addEventListener('ended', hideBanner);
+    
+  })();
+</script>
+</body>
+</html>
