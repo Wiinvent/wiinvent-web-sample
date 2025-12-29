@@ -4,7 +4,7 @@
 ### Import Sdk
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/KVA24/banner-ad-sdk@1.1.2/dist/ad-sdk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/KVA24/banner-ad-sdk@1.1.4/dist/ad-sdk.min.js"></script>
 ```
 
 ## Khởi tạo SDK
@@ -73,7 +73,7 @@ const welcomeSdk = new AdSDK({
 Bắt đầu hiển thị quảng cáo trong element được chỉ định.
 
 ```javascript
-sdk.start(domId, bannerType, adSize, positionId)
+sdk.start(domId, bannerType, adSize, positionId, () => {})
 ```
 
 **Tham số:**
@@ -252,6 +252,7 @@ sdk.on('error', (data) => {
 
 // Hiển thị quảng cáo
 sdk.start("ad-container", "DISPLAY", "LARGE_BANNER", "homepage");
+
 </script>
 ```
 

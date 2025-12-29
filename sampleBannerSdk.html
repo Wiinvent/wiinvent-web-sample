@@ -171,7 +171,7 @@
 </div>
 
 <!-- Load SDK -->
-<script src="https://cdn.jsdelivr.net/gh/KVA24/banner-ad-sdk@1.1.2/dist/ad-sdk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/KVA24/banner-ad-sdk@1.1.4/dist/ad-sdk.min.js"></script>
 
 <script>
   (function () {
@@ -278,11 +278,23 @@
         el.style.opacity = '0';
       }
       
+      const streamId = document.getElementById('input-stream').value.trim();
+      const channelId = document.getElementById('input-channel').value.trim();
       const positionId = document.getElementById('input-position').value.trim();
       const bannerType = document.getElementById('select-banner').value;
       
       if (!window.sdk) return log('SDK not ready. Call init first.');
-      window.sdk.start("ad-slot", "DISPLAY", bannerType, positionId);
+      window.sdk.start("ad-slot", "DISPLAY", bannerType, positionId, (data) => {
+        if (data && data.status === 'success') {
+          console.log("Ad successfully");
+          const elControl = document.getElementById("ad-controls");
+          if (elControl) {
+            elControl.style.opacity = '1';
+          }
+        } else {
+          console.log("Ad failure");
+        }
+      });
       document.getElementById('slot-info').textContent =
         `Stream ID: ${streamId || "null"}, Channel ID: ${channelId || "null"}, Position ID: ${positionId}, Banner: ${bannerType}`;
       
@@ -297,7 +309,13 @@
     
     document.getElementById('btn-welcome').addEventListener('click', () => {
       if (!window.sdk) return log('SDK not ready. Call init first.');
-      window.welcomeSdk.start()
+      window.welcomeSdk.start(null, null, null, (data) => {
+        if (data && data.status === 'success') {
+          console.log("Ad successfully");
+        } else {
+          console.log("Ad failure");
+        }
+      })
       log('welcomeSdk.start() called');
     })
   })();
