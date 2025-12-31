@@ -4,7 +4,7 @@
 ### Import Sdk
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/KVA24/banner-ad-sdk@1.1.4/dist/ad-sdk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/KVA24/banner-ad-sdk@1.1.5/dist/ad-sdk.min.js"></script>
 ```
 
 ## Khởi tạo SDK
@@ -25,6 +25,7 @@ const sdk = new AdSDK({
   age: "25",
   gender: AdSDK.GENDER.MALE,
   platform: AdSDK.PLATFORM.WEB,
+  isUsePartnerSkipButton: false
 });
 
 // Welcome
@@ -42,6 +43,7 @@ const welcomeSdk = new AdSDK({
   age: "25",
   gender: AdSDK.GENDER.MALE,
   platform: AdSDK.PLATFORM.WEB,
+  isUsePartnerSkipButton: true
 });
 ```
 
@@ -55,11 +57,12 @@ const welcomeSdk = new AdSDK({
 | `streamId` | String | Có | `""` | ID của stream/content                                                        |
 | `channelId` | String | Có | `""` | ID của kênh                                                                  |
 | `platform` | String | Có | `"WEB"` | Nền tảng: `TV`, `WEB`, `ANDROID`, `IOS`                                      |
+| `isUsePartnerSkipButton` | Boolean | Có | `"WEB"` | Có hay không hiển thị nút dismiss của wii                                      |
 | `debug` | Boolean | Không | `false` | Bật chế độ debug log                                                         |
 | `title` | String | Không | `""` | Tiêu đề nội dung                                                             |
 | `transId` | String | Không | `""` | Transaction ID                                                               |
 | `category` | String | Không | `""` | Category list                                                                |
-| `keyword` | String | Không | `""` | Keyword                                                                       |
+| `keyword` | String | Không | `""` | Keyword                                                                      |
 | `age` | String | Không | `"0"` | Tuổi người dùng                                                              |
 | `gender` | String | Không | `"NONE"` | Giới tính: `MALE`, `FEMALE`, `OTHER`, `NONE`                                 |
 | `segments` | String | Không | `""` | Segment list                                                                 |
