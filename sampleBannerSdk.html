@@ -114,15 +114,15 @@
     
     <div class="input_each">
       <label>Position ID:</label><br/>
-      <input id="input-position" type="text" style="width:100%;margin-bottom:8px;" placeholder="VD: homepage1"
-             value="homepage1"/>
+      <input id="input-position" type="text" style="width:100%;margin-bottom:8px;" placeholder="VD: HOME_1"
+             value="HOME_1"/>
     </div>
     
     <div class="input_each">
       <label>Banner Type:</label><br/>
       <select id="select-banner" style="width:100%;margin-bottom:12px;">
-        <option value="LARGE_BANNER" selected>LARGE_BANNER</option>
-        <option value="MEDIUM_BANNER">MEDIUM_BANNER</option>
+        <option value="HOMEPAGE_LARGE_BANNER" selected>HOMEPAGE_LARGE_BANNER</option>
+        <option value="SUBPAGE_BANNER">SUBPAGE_BANNER</option>
       </select>
     </div>
   </div>
@@ -144,20 +144,20 @@
     
     <!-- Banner rectangle near progress bar -->
     <div id="video-ad-slot" style="
-      position:absolute;
+    position:absolute;
       bottom:80px;
       left:50%;
       transform:translateX(-50%);
       width:780px;
-      height:100px;
+      height:120px;
       pointer-events:none;
       z-index:10;
-      background:#fff;
-      border:1px solid #ccc;
+      background:transparent;
+      border:none;
       display:flex;
       align-items:center;
       justify-content:center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      box-shadow: none;
       opacity:0;
       transition: opacity 0.3s;
     ">
@@ -171,7 +171,7 @@
 </div>
 
 <!-- Load SDK -->
-<script src="https://cdn.jsdelivr.net/gh/KVA24/banner-ad-sdk@1.1.5/dist/ad-sdk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/KVA24/banner-ad-sdk@1.1.7/dist/ad-sdk.min.js"></script>
 
 <script>
   (function () {
@@ -249,7 +249,7 @@
         age: "20",
         gender: AdSDK.GENDER.MALE,
         uid20: "",
-        isUsePartnerSkipButton: false
+        isUsePartnerSkipButton: true
       });
       
       window.welcomeSdk = new AdSDK({
