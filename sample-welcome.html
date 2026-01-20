@@ -1,267 +1,408 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Welcome Screen Demo (No Video)</title>
   
   <style>
-    :root{
-      --bg:#0b1220;
-      --panel: rgba(255,255,255,.06);
-      --panel2: rgba(255,255,255,.10);
-      --stroke: rgba(255,255,255,.14);
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.62);
+    :root {
+      --bg: #0b1220;
+      --panel: rgba(255, 255, 255, .06);
+      --panel2: rgba(255, 255, 255, .10);
+      --stroke: rgba(255, 255, 255, .14);
+      --text: rgba(255, 255, 255, .92);
+      --muted: rgba(255, 255, 255, .62);
       --accent: #4f8cff;
       --ok: #34c759;
-      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --shadow: 0 18px 60px rgba(0, 0, 0, .45);
       --r: 16px;
       --rlg: 22px;
       --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
     }
     
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
-    body{
-      margin:0;
-      font-family: var(--font);
-      background:
-        radial-gradient(1200px 800px at 10% 20%, rgba(79,140,255,.18), transparent 60%),
-        radial-gradient(900px 700px at 90% 15%, rgba(52,199,89,.10), transparent 55%),
-        var(--bg);
-      color: var(--text);
-      overflow:hidden;
+    * {
+      box-sizing: border-box;
     }
     
-    .app{
-      height:100%;
-      display:grid;
+    html, body {
+      height: 100%;
+    }
+    
+    body {
+      margin: 0;
+      font-family: var(--font);
+      background: radial-gradient(1200px 800px at 10% 20%, rgba(79, 140, 255, .18), transparent 60%),
+      radial-gradient(900px 700px at 90% 15%, rgba(52, 199, 89, .10), transparent 55%),
+      var(--bg);
+      color: var(--text);
+      overflow: hidden;
+    }
+    
+    .app {
+      height: 100%;
+      display: grid;
       grid-template-columns: 420px 1fr;
-      gap:18px;
-      padding:22px;
+      gap: 18px;
+      padding: 22px;
     }
     
     /* left panel */
-    .side{
+    .side {
       background: var(--panel);
-      border:1px solid var(--stroke);
+      border: 1px solid var(--stroke);
       border-radius: var(--rlg);
       box-shadow: var(--shadow);
-      padding:18px;
-      display:flex;
-      flex-direction:column;
-      min-width:320px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      min-width: 320px;
     }
     
-    .brand{ display:flex; gap:12px; align-items:center; padding:10px 10px 14px; }
-    .logo{
-      width:44px;height:44px;border-radius:14px;
-      background: linear-gradient(145deg, rgba(79,140,255,.95), rgba(79,140,255,.35));
-      display:grid;place-items:center;
-      border:1px solid rgba(255,255,255,.20);
-      box-shadow:0 14px 40px rgba(79,140,255,.25);
+    .brand {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 10px 14px;
     }
-    .brand h1{ margin:0; font-size:16px; letter-spacing:.2px; }
-    .brand p{ margin:2px 0 0; font-size:12px; color:var(--muted); }
     
-    .card{
-      background: var(--panel2);
-      border:1px solid var(--stroke);
-      border-radius: var(--r);
-      padding:14px;
-      margin-top:12px;
+    .logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(145deg, rgba(79, 140, 255, .95), rgba(79, 140, 255, .35));
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, .20);
+      box-shadow: 0 14px 40px rgba(79, 140, 255, .25);
     }
-    .card-title{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
-    .card-title strong{ font-size:13px; letter-spacing:.2px; }
-    .badge{
-      font-size:11px;
-      padding:4px 8px;
-      border-radius:999px;
-      border:1px solid var(--stroke);
+    
+    .brand h1 {
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: .2px;
+    }
+    
+    .brand p {
+      margin: 2px 0 0;
+      font-size: 12px;
       color: var(--muted);
-      background: rgba(0,0,0,.18);
     }
     
-    .row{
-      display:grid;
+    .card {
+      background: var(--panel2);
+      border: 1px solid var(--stroke);
+      border-radius: var(--r);
+      padding: 14px;
+      margin-top: 12px;
+    }
+    
+    .card-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .card-title strong {
+      font-size: 13px;
+      letter-spacing: .2px;
+    }
+    
+    .badge {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      color: var(--muted);
+      background: rgba(0, 0, 0, .18);
+    }
+    
+    .row {
+      display: grid;
       grid-template-columns: 120px 1fr;
-      gap:10px;
-      padding:6px 0;
-      border-bottom:1px dashed rgba(255,255,255,.12);
+      gap: 10px;
+      padding: 6px 0;
+      border-bottom: 1px dashed rgba(255, 255, 255, .12);
     }
-    .row:last-child{ border-bottom:none; }
-    .k{ color:var(--muted); font-size:12px; }
-    .v{ font-size:12px; }
     
-    .actions{ display:flex; gap:10px; margin-top:14px; }
-    .btn{
-      appearance:none;
-      border:1px solid var(--stroke);
-      background: rgba(0,0,0,.18);
+    .row:last-child {
+      border-bottom: none;
+    }
+    
+    .k {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    
+    .v {
+      font-size: 12px;
+    }
+    
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    
+    .btn {
+      appearance: none;
+      border: 1px solid var(--stroke);
+      background: rgba(0, 0, 0, .18);
       color: var(--text);
       border-radius: 14px;
-      padding:12px 14px;
-      cursor:pointer;
-      font-weight:800;
-      letter-spacing:.2px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      min-height:44px;
-      flex:1;
+      padding: 12px 14px;
+      cursor: pointer;
+      font-weight: 800;
+      letter-spacing: .2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 44px;
+      flex: 1;
       transition: transform .08s ease, background .15s ease, border-color .15s ease;
-      user-select:none;
-    }
-    .btn:hover{ background: rgba(0,0,0,.26); border-color: rgba(255,255,255,.26); }
-    .btn:active{ transform: translateY(1px); }
-    .btn[disabled]{ opacity:.55; cursor:not-allowed; }
-    
-    .btn-primary{
-      background: linear-gradient(135deg, rgba(79,140,255,.95), rgba(79,140,255,.55));
-      border-color: rgba(79,140,255,.55);
-      box-shadow: 0 14px 45px rgba(79,140,255,.18);
-    }
-    .btn-primary:hover{
-      background: linear-gradient(135deg, rgba(79,140,255,1), rgba(79,140,255,.62));
-      border-color: rgba(79,140,255,.75);
+      user-select: none;
     }
     
-    .hint{
-      margin-top:10px;
+    .btn:hover {
+      background: rgba(0, 0, 0, .26);
+      border-color: rgba(255, 255, 255, .26);
+    }
+    
+    .btn:active {
+      transform: translateY(1px);
+    }
+    
+    .btn[disabled] {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, rgba(79, 140, 255, .95), rgba(79, 140, 255, .55));
+      border-color: rgba(79, 140, 255, .55);
+      box-shadow: 0 14px 45px rgba(79, 140, 255, .18);
+    }
+    
+    .btn-primary:hover {
+      background: linear-gradient(135deg, rgba(79, 140, 255, 1), rgba(79, 140, 255, .62));
+      border-color: rgba(79, 140, 255, .75);
+    }
+    
+    .hint {
+      margin-top: 10px;
       color: var(--muted);
-      font-size:12px;
-      line-height:1.45;
+      font-size: 12px;
+      line-height: 1.45;
     }
     
-    .log{ margin-top:12px; flex:1; overflow:auto; padding-right:6px; }
-    .log pre{
-      margin:0;
-      padding:12px;
-      border-radius:14px;
-      border:1px solid var(--stroke);
-      background: rgba(0,0,0,.20);
-      color: rgba(255,255,255,.85);
-      font-size:12px;
-      line-height:1.45;
+    .log {
+      margin-top: 12px;
+      flex: 1;
+      overflow: auto;
+      padding-right: 6px;
+    }
+    
+    .log pre {
+      margin: 0;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid var(--stroke);
+      background: rgba(0, 0, 0, .20);
+      color: rgba(255, 255, 255, .85);
+      font-size: 12px;
+      line-height: 1.45;
       white-space: pre-wrap;
       word-break: break-word;
       min-height: 180px;
     }
     
     /* right stage */
-    .stage{
-      position:relative;
+    .stage {
+      position: relative;
       border-radius: var(--rlg);
-      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
-      border:1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .02));
+      border: 1px solid var(--stroke);
       box-shadow: var(--shadow);
-      overflow:hidden;
-      display:grid;
+      overflow: hidden;
+      display: grid;
       grid-template-rows: auto 1fr;
       min-height: 520px;
     }
     
-    .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:14px 16px;
-      border-bottom:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.14);
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, .10);
+      background: rgba(0, 0, 0, .14);
     }
     
-    .left{ display:flex; align-items:center; gap:10px; }
-    .dot{
-      width:10px;height:10px;border-radius:50%;
-      background: rgba(255,255,255,.22);
-      border:1px solid rgba(255,255,255,.22);
+    .left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    .dot.on{ background: var(--ok); border-color: rgba(52,199,89,.65); box-shadow: 0 0 0 6px rgba(52,199,89,.12); }
-    .title{ font-weight:900; letter-spacing:.3px; font-size:13px; }
-    .right{ color: var(--muted); font-size:12px; display:flex; gap:12px; align-items:center; }
     
-    .screen{
-      position:relative;
-      display:grid;
-      place-items:center;
-      padding:16px;
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .22);
+      border: 1px solid rgba(255, 255, 255, .22);
+    }
+    
+    .dot.on {
+      background: var(--ok);
+      border-color: rgba(52, 199, 89, .65);
+      box-shadow: 0 0 0 6px rgba(52, 199, 89, .12);
+    }
+    
+    .title {
+      font-weight: 900;
+      letter-spacing: .3px;
+      font-size: 13px;
+    }
+    
+    .right {
+      color: var(--muted);
+      font-size: 12px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    
+    .screen {
+      position: relative;
+      display: grid;
+      place-items: center;
+      padding: 16px;
     }
     
     /* TV OFF overlay */
-    .tv-off{
-      position:absolute;
-      inset:0;
-      display:grid;
-      place-items:center;
-      background: radial-gradient(800px 400px at 50% 40%, rgba(255,255,255,.06), rgba(0,0,0,.55));
+    .tv-off {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(800px 400px at 50% 40%, rgba(255, 255, 255, .06), rgba(0, 0, 0, .55));
       opacity: 1;
       transition: opacity .2s ease;
-      pointer-events:none;
+      pointer-events: none;
     }
-    .tv-off.hidden{ opacity:0; }
     
-    .off-card{
+    .tv-off.hidden {
+      opacity: 0;
+    }
+    
+    .off-card {
       width: min(560px, 92%);
       border-radius: 22px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.35);
+      border: 1px solid rgba(255, 255, 255, .14);
+      background: rgba(0, 0, 0, .35);
       padding: 20px;
-      text-align:center;
+      text-align: center;
       backdrop-filter: blur(8px);
-      box-shadow: 0 22px 80px rgba(0,0,0,.35);
+      box-shadow: 0 22px 80px rgba(0, 0, 0, .35);
     }
-    .off-card h2{ margin:0; font-size:24px; letter-spacing:.2px; }
-    .off-card p{ margin:8px 0 0; color: var(--muted); font-size:14px; line-height:1.5; }
+    
+    .off-card h2 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: .2px;
+    }
+    
+    .off-card p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
     
     /* Welcome UI */
-    .welcome{
-      width:min(900px, 96%);
-      background: rgba(0,0,0,.28);
-      border: 1px solid rgba(255,255,255,.14);
+    .welcome {
+      width: min(900px, 96%);
+      background: rgba(0, 0, 0, .28);
+      border: 1px solid rgba(255, 255, 255, .14);
       border-radius: 22px;
       padding: 22px;
-      box-shadow: 0 22px 80px rgba(0,0,0,.35);
+      box-shadow: 0 22px 80px rgba(0, 0, 0, .35);
       backdrop-filter: blur(8px);
-      display:none;
+      display: none;
     }
-    .welcome.on{ display:block; }
     
-    .welcome h2{ margin:0; font-size:28px; letter-spacing:.2px; }
-    .welcome p{ margin:8px 0 0; color:var(--muted); line-height:1.5; font-size:14px; }
+    .welcome.on {
+      display: block;
+    }
     
-    .tiles{
-      display:grid;
+    .welcome h2 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: .2px;
+    }
+    
+    .welcome p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+    
+    .tiles {
+      display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap:12px;
-      margin-top:16px;
+      gap: 12px;
+      margin-top: 16px;
     }
-    .tile{
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      padding:14px;
-      min-height:92px;
+    
+    .tile {
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, .12);
+      background: rgba(255, 255, 255, .06);
+      padding: 14px;
+      min-height: 92px;
     }
-    .tile strong{ display:block; font-size:13px; margin-bottom:6px; }
-    .tile span{ display:block; font-size:12px; color:var(--muted); line-height:1.4; }
+    
+    .tile strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+    
+    .tile span {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
     
     /* Ads container */
-    #wiinvent_ads_container_id{
-      position:absolute;
-      inset:0;
-      width:100%;
-      height:100%;
-      display:none;          /* show when ads running */
+    #wiinvent_ads_container_id {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: none; /* show when ads running */
       z-index: 50;
-      pointer-events:auto;
+      pointer-events: auto;
     }
     
-    @media (max-width: 980px){
-      body{ overflow:auto; }
-      .app{ grid-template-columns:1fr; height:auto; }
-      .stage{ min-height:560px; }
+    @media (max-width: 980px) {
+      body {
+        overflow: auto;
+      }
+      
+      .app {
+        grid-template-columns:1fr;
+        height: auto;
+      }
+      
+      .stage {
+        min-height: 560px;
+      }
     }
   </style>
 </head>
@@ -272,7 +413,9 @@
     <div class="brand">
       <div class="logo" aria-hidden="true">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-          <path d="M4 6.5C4 5.12 5.12 4 6.5 4h11C18.88 4 20 5.12 20 6.5v7C20 14.88 18.88 16 17.5 16h-11C5.12 16 4 14.88 4 13.5v-7Z" stroke="white" opacity="0.95" stroke-width="1.6"/>
+          <path
+            d="M4 6.5C4 5.12 5.12 4 6.5 4h11C18.88 4 20 5.12 20 6.5v7C20 14.88 18.88 16 17.5 16h-11C5.12 16 4 14.88 4 13.5v-7Z"
+            stroke="white" opacity="0.95" stroke-width="1.6"/>
           <path d="M8 20h8" stroke="white" opacity="0.95" stroke-width="1.6" stroke-linecap="round"/>
           <path d="M12 16v4" stroke="white" opacity="0.95" stroke-width="1.6" stroke-linecap="round"/>
         </svg>
@@ -364,7 +507,7 @@
 </div>
 
 <!-- SDK script -->
-  <script src="https://cdn.jsdelivr.net/gh/KVA24/banner-ad-sdk@welcome.1.0.2/dist/wii-sdk-welcome-tvc.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/KVA24/banner-ad-sdk@welcome.1.0.3/dist/wii-sdk-welcome-tvc.js"></script>
 
 <script>
   const $ = (id) => document.getElementById(id);
@@ -395,9 +538,9 @@
   // Clock
   (function tickClock() {
     const now = new Date();
-    const hh = String(now.getHours()).padStart(2,'0');
-    const mm = String(now.getMinutes()).padStart(2,'0');
-    const ss = String(now.getSeconds()).padStart(2,'0');
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    const ss = String(now.getSeconds()).padStart(2, '0');
     $('nowClock').textContent = `${hh}:${mm}:${ss}`;
     setTimeout(tickClock, 500);
   })();
@@ -457,8 +600,8 @@
       if (!type) return;
       
       const allow = [
-        "REQUEST","LOADED","START","PAUSED","RESUMED","ERROR","PLAYER_ERROR","CLICK",
-        "IMPRESSION","SKIPPED","COMPLETE","DESTROY","FULLSCREEN","END","All_ADS_COMPLETE","NO_ADS","BEGIN","GET_ADS"
+        "REQUEST", "LOADED", "START", "PAUSED", "RESUMED", "ERROR", "PLAYER_ERROR", "CLICK",
+        "IMPRESSION", "SKIPPED", "COMPLETE", "DESTROY", "FULLSCREEN", "END", "All_ADS_COMPLETE", "NO_ADS", "BEGIN", "GET_ADS"
       ];
       if (allow.includes(type)) log('[SDK EVENT]', type, e.data);
       
@@ -473,12 +616,20 @@
         displayEle(adsContainer, true);
         setText('adsStateText', 'visible');
         renderSkipButton();
-        try { wiiSdk && typeof wiiSdk.playAds === 'function' && wiiSdk.playAds(); } catch (err) { log('[wiiSdk.playAds] error', String(err)); }
+        try {
+          wiiSdk && typeof wiiSdk.playAds === 'function' && wiiSdk.playAds();
+        } catch (err) {
+          log('[wiiSdk.playAds] error', String(err));
+        }
       }
       
       if (type === "GET_ADS") {
         log("==== GET_ADS ====");
-        try { wiiSdk && wiiSdk.setSource && wiiSdk.setSource(); } catch (err) { log('[wiiSdk.setSource] error', String(err)); }
+        try {
+          wiiSdk && wiiSdk.setSource && wiiSdk.setSource();
+        } catch (err) {
+          log('[wiiSdk.setSource] error', String(err));
+        }
       }
       
       if (type === "END" || type === "COMPLETE" || type === "All_ADS_COMPLETE" || type === "NO_ADS") {
@@ -494,29 +645,29 @@
     
     // Init SDK (fallback mock nếu script chưa load)
     try {
-      if (!window.WiiSDKWelcomeTVC || !WiiSDKWelcomeTVC.WelcomeSdk) {
+      if (!window.WI || !WI.WelcomeSdk) {
         setText('sdkBadge', 'SDK: missing');
         log('[SDK] WI.WelcomeSdk not found. Kiểm tra ./js/wii-sdk-welcome-tvc.js');
         // mock START
-        setTimeout(() => window.postMessage({ type: 'START', mock: true }, '*'), 600);
+        setTimeout(() => window.postMessage({type: 'START', mock: true}, '*'), 600);
         return;
       }
       
-      wiiSdkWelcome = new WiiSDKWelcomeTVC.WelcomeSdk({
-        env: WiiSDKWelcomeTVC.Environment.SANDBOX,
+      wiiSdk = new WI.WelcomeSdk({
+        env: WI.Environment.SANDBOX,
         tenantId: 14,
-        deviceType: WiiSDKWelcomeTVC.DeviceType.TV,
+        deviceType: WI.DeviceType.TV,
         domId: "wiinvent_ads_container_id",
         channelId: "",
         streamId: "1509",
         adId: "1999",
-        contentType: WiiSDKWelcomeTVC.ContentType.VIDEO,
+        contentType: WI.ContentType.VIDEO,
         title: "noi dung 1",
         transId: "111",
         category: "1, 2",
         keyword: "1, 2",
         age: "20",
-        gender: WiiSDKWelcomeTVC.Gender.MALE,
+        gender: WI.Gender.MALE,
         uid20: "test",
         manufacturer: "",
         model: "",
@@ -535,10 +686,10 @@
         segments: "1,2,3,11,22,33"
       });
       
-      window.wiiSdkWelcome = wiiSdkWelcome;
+      window.wiiSdk = wiiSdk;
       setText('sdkBadge', 'SDK: ready');
       log('[SDK] wiiSdk created. call start()...');
-      wiiSdkWelcome.start();
+      wiiSdk.start();
     } catch (err) {
       setText('sdkBadge', 'SDK: init error');
       log('[SDK] init error:', String(err));
@@ -547,9 +698,15 @@
   
   function renderSkipButton() {
     // cleanup
-    try { if (skipTimer) clearInterval(skipTimer); } catch {}
+    try {
+      if (skipTimer) clearInterval(skipTimer);
+    } catch {
+    }
     skipTimer = null;
-    try { if (skipButton && skipButton.parentNode) skipButton.parentNode.removeChild(skipButton); } catch {}
+    try {
+      if (skipButton && skipButton.parentNode) skipButton.parentNode.removeChild(skipButton);
+    } catch {
+    }
     skipButton = null;
     
     skipButton = document.createElement('button');
@@ -578,7 +735,7 @@
     
     let countdown = 5;
     // ưu tiên partnerSkipOffset nếu bạn muốn align theo SDK
-    const cfgOffset = (wiiSdkWelcome && wiiSdkWelcome.partnerSkipOffset != null) ? Number(wiiSdkWelcome.partnerSkipOffset) : null;
+    const cfgOffset = (wiiSdk && wiiSdk.partnerSkipOffset != null) ? Number(wiiSdk.partnerSkipOffset) : null;
     if (Number.isFinite(cfgOffset) && cfgOffset >= 0) countdown = cfgOffset;
     
     const icon = `
@@ -587,7 +744,7 @@
         </svg>
       `;
     
-    const textSkip = (n) => `Skip sau ${Math.max(0,n)}s ${icon}`;
+    const textSkip = (n) => `Skip sau ${Math.max(0, n)}s ${icon}`;
     const textDone = () => `Skip ads ${icon}`;
     
     skipButton.disabled = true;
@@ -595,14 +752,18 @@
     const doSkip = () => {
       if (countdown > 0) return;
       log('[UI] Skip pressed');
-      try { wiiSdkWelcome && typeof wiiSdkWelcome.skip === 'function' && wiiSdkWelcome.skip(); } catch (err) { log('[wiiSdkWelcome.skip] error', String(err)); }
+      try {
+        wiiSdk && typeof wiiSdk.skip === 'function' && wiiSdk.skip();
+      } catch (err) {
+        log('[wiiSdk.skip] error', String(err));
+      }
       contentPlayBack();
     };
     
     skipButton.addEventListener('click', doSkip);
     window.addEventListener('keydown', (ev) => {
       if (ev.key === 'Enter' || ev.keyCode === 13) doSkip();
-    }, { passive: true });
+    }, {passive: true});
     
     const tick = () => {
       if (!skipButton) return;
@@ -635,13 +796,17 @@
   
   function contentPlayBack() {
     // stop skip timer
-    try { if (skipTimer) clearInterval(skipTimer); } catch {}
+    try {
+      if (skipTimer) clearInterval(skipTimer);
+    } catch {
+    }
     skipTimer = null;
     
     // remove skip btn
     try {
       document.body.removeChild(skipButton);
-    } catch {}
+    } catch {
+    }
     skipButton = null;
     
     // hide ads container
@@ -664,7 +829,7 @@
   $('btnReset').addEventListener('click', () => {
     log('[UI] Reset');
     initAds = false;
-    wiiSdkWelcome = null;
+    wiiSdk = null;
     setText('initAdsText', 'false');
     setText('sdkBadge', 'SDK: chưa init');
     setTV(false);
