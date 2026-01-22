@@ -4,7 +4,7 @@
 ### Import Sdk
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/KVA24/banner-ad-sdk@1.1.7/dist/ad-sdk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/KVA24/banner-ad-sdk@2.0.5/dist/ad-sdk.min.js"></script>
 ```
 
 ## Khởi tạo SDK
