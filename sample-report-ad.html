@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wiinvent web-ima.js – Debug Sample</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --panel: #1a1d2e;
+      --border: #2d3151;
+      --accent: #5b6af0;
+      --accent2: #20c997;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --log-bg: #0d1117;
+    }
+    
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* ── Header ── */
+    header {
+      padding: 12px 20px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    header h1 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    
+    header span {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    
+    .badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      background: #1e2a3a;
+      color: var(--accent2);
+      border: 1px solid var(--accent2);
+    }
+    
+    /* ── Layout ── */
+    .workspace {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      grid-template-rows: auto 1fr;
+      flex: 1;
+      gap: 0;
+      min-height: 0;
+    }
+    
+    /* ── Video Area ── */
+    .video-col {
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border);
+    }
+    
+    .video-wrap {
+      position: relative;
+      background: #000;
+      aspect-ratio: 16/9;
+      max-height: 460px;
+    }
+    
+    .video-wrap video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+    }
+    
+    #ads-container {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    
+    #ads-container.active {
+      pointer-events: all;
+    }
+    
+    /* Player Controls */
+    .player-controls {
+      background: #111;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    
+    .player-controls input[type=range] {
+      flex: 1;
+      accent-color: var(--accent);
+      height: 4px;
+      cursor: pointer;
+    }
+    
+    .btn {
+      padding: 5px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 12px;
+      transition: background .15s;
+    }
+    
+    .btn:hover {
+      background: #252840;
+    }
+    
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    
+    .btn.primary:hover {
+      background: #4a59e0;
+    }
+    
+    .btn.danger {
+      background: var(--danger);
+      border-color: var(--danger);
+      color: #fff;
+    }
+    
+    .btn.danger:hover {
+      background: #dc2626;
+    }
+    
+    .btn.success {
+      background: var(--accent2);
+      border-color: var(--accent2);
+      color: #000;
+    }
+    
+    .btn.success:hover {
+      background: #16a17f;
+    }
+    
+    #time-display {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+      min-width: 90px;
+      text-align: right;
+    }
+    
+    /* ── Config + SDK Controls ── */
+    .sdk-section {
+      padding: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .sdk-section h2 {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 10px;
+    }
+    
+    .config-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    
+    .config-item {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    
+    .config-item label {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    
+    .config-item input,
+    .config-item select {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      color: var(--text);
+      padding: 5px 8px;
+      font-size: 12px;
+      width: 100%;
+    }
+    
+    .config-item input:focus,
+    .config-item select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    
+    .config-item.full {
+      grid-column: 1 / -1;
+    }
+    
+    .sdk-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    
+    /* ── State Display ── */
+    .state-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .state-pill {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: #1a1d2e;
+      border: 1px solid var(--border);
+    }
+    
+    .state-pill span {
+      color: var(--muted);
+    }
+    
+    .state-pill b {
+      color: var(--text);
+    }
+    
+    .state-pill.on b {
+      color: var(--accent2);
+    }
+    
+    .state-pill.warn b {
+      color: var(--warn);
+    }
+    
+    .state-pill.err b {
+      color: var(--danger);
+    }
+    
+    /* ── Right Panel ── */
+    .debug-col {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    
+    .log-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      background: var(--panel);
+      flex-shrink: 0;
+    }
+    
+    .log-header h2 {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--muted);
+    }
+    
+    .log-filters {
+      display: flex;
+      gap: 4px;
+    }
+    
+    .filter-btn {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+    }
+    
+    .filter-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    
+    #event-log {
+      flex: 1;
+      overflow-y: auto;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: 11.5px;
+      background: var(--log-bg);
+      min-height: 0;
+    }
+    
+    .log-entry {
+      display: grid;
+      grid-template-columns: 60px 90px 1fr;
+      gap: 0;
+      padding: 5px 10px;
+      border-bottom: 1px solid #161b22;
+      transition: background .1s;
+      cursor: default;
+    }
+    
+    .log-entry:hover {
+      background: #161b22;
+    }
+    
+    .log-entry .ts {
+      color: var(--muted);
+      font-size: 10px;
+      padding-top: 1px;
+    }
+    
+    .log-entry .tag {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 4px;
+      text-align: center;
+      height: fit-content;
+    }
+    
+    .log-entry .msg {
+      color: var(--text);
+      word-break: break-word;
+    }
+    
+    .log-entry .meta {
+      color: var(--muted);
+      font-size: 10px;
+      margin-top: 2px;
+      word-break: break-all;
+    }
+    
+    /* Tag colors */
+    .tag.sdk {
+      background: #1e3a5f;
+      color: #60a5fa;
+    }
+    
+    .tag.event {
+      background: #1a3328;
+      color: var(--accent2);
+    }
+    
+    .tag.warn {
+      background: #3b2f14;
+      color: var(--warn);
+    }
+    
+    .tag.error {
+      background: #3b1414;
+      color: var(--danger);
+    }
+    
+    .tag.player {
+      background: #2a1e3b;
+      color: #c084fc;
+    }
+    
+    .tag.info {
+      background: #1e2a3a;
+      color: #94a3b8;
+    }
+    
+    /* ── VAST Inspector ── */
+    .vast-section {
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    
+    .vast-header {
+      padding: 8px 14px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+    
+    .vast-header h2 {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--muted);
+    }
+    
+    #vast-body {
+      background: var(--log-bg);
+      font-family: monospace;
+      font-size: 11px;
+      color: #80c094;
+      padding: 10px;
+      max-height: 160px;
+      overflow-y: auto;
+      display: none;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    
+    /* Scrollbars */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+    
+    /* ── Bottom status ── */
+    footer {
+      padding: 6px 16px;
+      background: var(--panel);
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      gap: 16px;
+    }
+    
+    #sdk-status-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--muted);
+      margin-right: 5px;
+    }
+    
+    #sdk-status-dot.ready {
+      background: var(--accent2);
+      box-shadow: 0 0 6px var(--accent2);
+    }
+    
+    #sdk-status-dot.error {
+      background: var(--danger);
+    }
+    
+    /* hide when ad playing */
+    .content-hide {
+      display: none !important;
+    }
+    
+    /* Ad overlay badge */
+    #ad-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(0, 0, 0, .7);
+      color: #fff;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      display: none;
+      z-index: 10;
+    }
+    
+    #ad-badge.show {
+      display: block;
+    }
+    
+    @media (max-width: 900px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+      
+      .debug-col {
+        max-height: 350px;
+        border-top: 1px solid var(--border);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>🎯 Wiinvent — web-ima.js Debug Sample</h1>
+  <span class="badge">v1.0.0</span>
+  <span style="margin-left:auto; font-size:12px; color:var(--muted)">
+            <span id="sdk-status-dot"></span>
+            <span id="sdk-status-text">Chưa khởi tạo</span>
+        </span>
+</header>
+
+<div class="workspace">
+  
+  <!-- ═══ LEFT COLUMN ═══ -->
+  <div class="video-col">
+    
+    <!-- Video -->
+    <div class="video-wrap">
+      <video id="content-video" preload="metadata">
+        <source src="https://s0.2mdn.net/4253510/google_ddm_animation_480P.mp4" type="video/mp4">
+      </video>
+      <div id="ads-container"></div>
+      <div id="ad-badge">📺 AD đang phát</div>
+    </div>
+    
+    <!-- Custom player controls -->
+    <div class="player-controls">
+      <button class="btn primary" id="btn-play">▶ Play</button>
+      <button class="btn" id="btn-fullscreen">⛶</button>
+      <input type="range" id="progress-bar" value="0" min="0" max="1000" step="1">
+      <span id="time-display">0:00 / 0:00</span>
+    </div>
+    
+    <!-- SDK Config -->
+    <div class="sdk-section">
+      <h2>⚙️ Cấu hình SDK</h2>
+      <div class="config-grid">
+        <div class="config-item">
+          <label>Environment</label>
+          <select id="cfg-env">
+            <option value="SANDBOX" selected>SANDBOX</option>
+            <option value="PRODUCTION">PRODUCTION</option>
+            <option value="VIETTEL_PRODUCTION">VIETTEL_PRODUCTION</option>
+          </select>
+        </div>
+        <div class="config-item">
+          <label>Platform</label>
+          <select id="cfg-platform">
+            <option value="WEB" selected>WEB</option>
+            <option value="TV">TV</option>
+            <option value="IOS">IOS</option>
+            <option value="ANDROID">ANDROID</option>
+          </select>
+        </div>
+        <div class="config-item">
+          <label>Tenant ID</label>
+          <input type="number" id="cfg-tenant" value="14">
+        </div>
+        <div class="config-item">
+          <label>Channel ID</label>
+          <input type="text" id="cfg-channel" value="115376">
+        </div>
+        <div class="config-item">
+          <label>Stream ID</label>
+          <input type="text" id="cfg-stream" value="21508">
+        </div>
+        <div class="config-item">
+          <label>Ad ID</label>
+          <input type="text" id="cfg-adid" value="1999">
+        </div>
+        <div class="config-item">
+          <label>Content Type</label>
+          <select id="cfg-content-type">
+            <option value="VIDEO" selected>VIDEO</option>
+            <option value="VOD">VOD</option>
+            <option value="FILM">FILM</option>
+            <option value="LIVE_STREAM">LIVE_STREAM</option>
+          </select>
+        </div>
+        <div class="config-item">
+          <label>Device Type</label>
+          <select id="cfg-device-type">
+            <option value="PC" selected>PC</option>
+            <option value="PHONE">PHONE</option>
+          </select>
+        </div>
+        <div class="config-item">
+          <label>Gender</label>
+          <select id="cfg-gender">
+            <option value="NONE" selected>NONE</option>
+            <option value="MALE">MALE</option>
+            <option value="FEMALE">FEMALE</option>
+          </select>
+        </div>
+        <div class="config-item">
+          <label>Age</label>
+          <input type="number" id="cfg-age" value="25">
+        </div>
+        <div class="config-item">
+          <label>Title</label>
+          <input type="text" id="cfg-title" value="Debug Video">
+        </div>
+        <div class="config-item">
+          <label>Trans ID</label>
+          <input type="text" id="cfg-transid" value="debug-001">
+        </div>
+        <div class="config-item full">
+          <label>Segments (comma-separated)</label>
+          <input type="text" id="cfg-segments" value="1,2,3">
+        </div>
+        <div class="config-item full">
+          <label>Video URL</label>
+          <input type="text" id="cfg-video-url"
+                 value="https://s0.2mdn.net/4253510/google_ddm_animation_480P.mp4">
+        </div>
+      </div>
+      
+      <div class="sdk-actions">
+        <button class="btn primary" id="btn-load">🚀 Load & Start SDK</button>
+        <button class="btn danger" id="btn-destroy">🗑 Destroy SDK</button>
+        <button class="btn" id="btn-playadnow">▶ playAd()</button>
+        <button class="btn" id="btn-skip">⏭ skip()</button>
+        <button class="btn" id="btn-seek-mid">⏩ Seek 50%</button>
+        <button class="btn" id="btn-print-config">📋 Log Config</button>
+      </div>
+    </div>
+    
+    <!-- Live State -->
+    <div class="state-bar" id="state-bar">
+      <div class="state-pill" id="pill-sdk"><span>SDK </span><b>—</b></div>
+      <div class="state-pill" id="pill-ad"><span>Ad </span><b>—</b></div>
+      <div class="state-pill" id="pill-time"><span>Time </span><b>0.0s</b></div>
+      <div class="state-pill" id="pill-dur"><span>Dur </span><b>—</b></div>
+      <div class="state-pill" id="pill-breaks"><span>Breaks </span><b>—</b></div>
+    </div>
+  
+  </div><!-- /video-col -->
+  
+  <!-- ═══ RIGHT COLUMN: Debug Panel ═══ -->
+  <div class="debug-col">
+    
+    <div class="log-header">
+      <h2>📋 Event Log</h2>
+      <div style="display:flex; gap:6px; align-items:center">
+        <div class="log-filters">
+          <button class="filter-btn active" data-filter="all">ALL</button>
+          <button class="filter-btn" data-filter="event">EVENTS</button>
+          <button class="filter-btn" data-filter="sdk">SDK</button>
+          <button class="filter-btn" data-filter="player">PLAYER</button>
+          <button class="filter-btn" data-filter="error">ERRORS</button>
+        </div>
+        <button class="btn" id="btn-clear-log" style="font-size:11px; padding:3px 8px">🗑 Clear</button>
+        <button class="btn" id="btn-export-log" style="font-size:11px; padding:3px 8px">⬇ Export</button>
+      </div>
+    </div>
+    
+    <div id="event-log"></div>
+    
+    <!-- VAST Inspector -->
+    <div class="vast-section">
+      <div class="vast-header" id="vast-toggle">
+        <h2>🔍 VAST XML Inspector</h2>
+        <span id="vast-toggle-icon" style="font-size:12px; color:var(--muted)">▼ expand</span>
+      </div>
+      <pre id="vast-body">-- Không có VAST XML nào được capture --</pre>
+    </div>
+  
+  </div><!-- /debug-col -->
+
+</div><!-- /workspace -->
+
+<footer>
+  <span><span id="sdk-status-dot2"></span> SDK: <span id="footer-sdk">—</span></span>
+  <span>Events: <b id="footer-event-count">0</b></span>
+  <span>Ad breaks played: <b id="footer-breaks-played">0</b></span>
+  <span id="footer-vmap-url"
+        style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:400px"></span>
+</footer>
+
+<script src="https://ima-sdk.netlify.app/web-ima.js"></script>
+
+<script>
+  'use strict';
+  
+  // ──────────────────────────────────────────────
+  // 0. GLOBAL STATE
+  // ──────────────────────────────────────────────
+  var wiiSdk = null;
+  var adsInitialized = false;
+  var isAdPlaying = false;
+  var eventCount = 0;
+  var breaksPlayed = 0;
+  var currentFilter = 'all';
+  var logEntries = [];  // store all for export + filter
+  var adBreakCount = 0;
+  
+  // ──────────────────────────────────────────────
+  // 1. ELEMENTS
+  // ──────────────────────────────────────────────
+  var video = document.getElementById('content-video');
+  var adsContainer = document.getElementById('ads-container');
+  var adBadge = document.getElementById('ad-badge');
+  var progressBar = document.getElementById('progress-bar');
+  var timeDisplay = document.getElementById('time-display');
+  var eventLog = document.getElementById('event-log');
+  var vastBody = document.getElementById('vast-body');
+  var videoContainer = document.querySelector('.video-wrap');
+  
+  // Pills
+  var pillSdk = document.getElementById('pill-sdk');
+  var pillAd = document.getElementById('pill-ad');
+  var pillTime = document.getElementById('pill-time');
+  var pillDur = document.getElementById('pill-dur');
+  var pillBreaks = document.getElementById('pill-breaks');
+  
+  // ──────────────────────────────────────────────
+  // 2. LOGGER
+  // ──────────────────────────────────────────────
+  function ts() {
+    var now = new Date();
+    return now.toTimeString().slice(0, 8) + '.' + String(now.getMilliseconds()).padStart(3, '0');
+  }
+  
+  function addLog(tagClass, tagText, message, meta) {
+    var entry = { ts: ts(), tagClass: tagClass, tagText: tagText, message: message, meta: meta || '' };
+    logEntries.push(entry);
+    eventCount++;
+    document.getElementById('footer-event-count').textContent = eventCount;
+    
+    // filter check
+    var show = (currentFilter === 'all') || (currentFilter === tagClass);
+    if (!show) return;
+    
+    renderLogEntry(entry);
+  }
+  
+  function renderLogEntry(entry) {
+    var div = document.createElement('div');
+    div.className = 'log-entry';
+    div.dataset.tagClass = entry.tagClass;
+    div.innerHTML =
+      '<span class="ts">' + entry.ts.slice(0, 8) + '</span>' +
+      '<span class="tag ' + entry.tagClass + '">' + entry.tagText + '</span>' +
+      '<div><div class="msg">' + escHtml(entry.message) + '</div>' +
+      (entry.meta ? '<div class="meta">' + escHtml(entry.meta) + '</div>' : '') +
+      '</div>';
+    eventLog.appendChild(div);
+    eventLog.scrollTop = eventLog.scrollHeight;
+  }
+  
+  function escHtml(s) {
+    return String(s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  
+  function reRenderLog() {
+    eventLog.innerHTML = '';
+    for (var i = 0; i < logEntries.length; i++) {
+      var e = logEntries[i];
+      if (currentFilter === 'all' || currentFilter === e.tagClass) {
+        renderLogEntry(e);
+      }
+    }
+  }
+  
+  // ──────────────────────────────────────────────
+  // 3. STATE PILLS
+  // ──────────────────────────────────────────────
+  function setSdkState(state) {
+    pillSdk.querySelector('b').textContent = state;
+    pillSdk.className = 'state-pill' + (state === 'Ready' ? ' on' : state === 'Error' ? ' err' : '');
+    document.getElementById('sdk-status-text').textContent = state;
+    var dot = document.getElementById('sdk-status-dot');
+    dot.className = state === 'Ready' ? 'ready' : state === 'Error' ? 'error' : '';
+    document.getElementById('footer-sdk').textContent = state;
+  }
+  
+  function setAdState(state) {
+    pillAd.querySelector('b').textContent = state;
+    pillAd.className = 'state-pill' + (state === 'Playing' ? ' on' : state === 'Error' ? ' err' : state === 'Skipped' ? ' warn' : '');
+  }
+  
+  function updateTimePills() {
+    pillTime.querySelector('b').textContent = video.currentTime.toFixed(1) + 's';
+    if (!isNaN(video.duration)) {
+      pillDur.querySelector('b').textContent = video.duration.toFixed(1) + 's';
+    }
+  }
+  
+  // ──────────────────────────────────────────────
+  // 4. VIDEO PLAYER LOGIC
+  // ──────────────────────────────────────────────
+  var btnPlay = document.getElementById('btn-play');
+  var btnFullscreen = document.getElementById('btn-fullscreen');
+  
+  btnPlay.addEventListener('click', function () {
+    if (video.paused || video.ended) {
+      video.play().catch(function (e) {
+        addLog('warn', 'WARN', 'video.play() rejected: ' + e.message);
+      });
+    } else {
+      video.pause();
+    }
+  });
+  
+  video.addEventListener('play', function () {
+    btnPlay.textContent = '⏸ Pause';
+    addLog('player', 'PLAYER', 'video play');
+    
+    if (!adsInitialized) {
+      initSdk();
+      adsInitialized = true;
+    }
+  });
+  
+  video.addEventListener('pause', function () {
+    btnPlay.textContent = '▶ Play';
+    if (!isAdPlaying) addLog('player', 'PLAYER', 'video paused');
+  });
+  
+  video.addEventListener('ended', function () {
+    btnPlay.textContent = '↺ Replay';
+    addLog('player', 'PLAYER', 'video ended');
+  });
+  
+  video.addEventListener('loadedmetadata', function () {
+    addLog('player', 'PLAYER', 'loadedmetadata — duration: ' + video.duration.toFixed(2) + 's');
+    updateTimePills();
+  });
+  
+  video.addEventListener('timeupdate', function () {
+    if (!isAdPlaying && !isNaN(video.duration) && video.duration > 0) {
+      var pct = (video.currentTime / video.duration) * 1000;
+      progressBar.value = pct;
+      updateTimePills();
+      
+      var cur = formatTime(video.currentTime);
+      var tot = formatTime(video.duration);
+      timeDisplay.textContent = cur + ' / ' + tot;
+    }
+    
+    // feed SDK
+    if (wiiSdk && typeof wiiSdk.updateTime === 'function' && !video.paused && !isAdPlaying) {
+      wiiSdk.updateTime(video.currentTime, video.duration);
+    }
+  });
+  
+  progressBar.addEventListener('input', function () {
+    if (isAdPlaying || isNaN(video.duration)) return;
+    var seek = (progressBar.value / 1000) * video.duration;
+    video.currentTime = seek;
+    addLog('player', 'PLAYER', 'seek → ' + seek.toFixed(2) + 's');
+  });
+  
+  // Fullscreen
+  function isFullscreen() {
+    return !!(document.fullscreenElement || document.webkitFullscreenElement);
+  }
+  btnFullscreen.addEventListener('click', function () {
+    if (!isFullscreen()) {
+      var fn = videoContainer.requestFullscreen || videoContainer.webkitRequestFullscreen;
+      if (fn) fn.call(videoContainer);
+    } else {
+      var ex = document.exitFullscreen || document.webkitExitFullscreen;
+      if (ex) ex.call(document);
+    }
+  });
+  document.addEventListener('fullscreenchange', function () {
+    btnFullscreen.textContent = isFullscreen() ? '✕ Exit FS' : '⛶';
+  });
+  document.addEventListener('webkitfullscreenchange', function () {
+    btnFullscreen.textContent = isFullscreen() ? '✕ Exit FS' : '⛶';
+  });
+  
+  function formatTime(s) {
+    var sec = Math.floor(s);
+    var m = Math.floor(sec / 60);
+    var r = sec % 60;
+    return m + ':' + (r < 10 ? '0' : '') + r;
+  }
+  
+  // ──────────────────────────────────────────────
+  // 5. SDK INIT
+  // ──────────────────────────────────────────────
+  function buildConfig() {
+    return {
+      domId: 'ads-container',
+      liveTv: false,
+      env: document.getElementById('cfg-env').value,
+      flatform: document.getElementById('cfg-platform').value,
+      tenantId: parseInt(document.getElementById('cfg-tenant').value, 10),
+      channelId: document.getElementById('cfg-channel').value,
+      streamId: document.getElementById('cfg-stream').value,
+      adId: document.getElementById('cfg-adid').value,
+      deviceType: document.getElementById('cfg-device-type').value,
+      contentType: document.getElementById('cfg-content-type').value,
+      gender: document.getElementById('cfg-gender').value,
+      age: document.getElementById('cfg-age').value,
+      title: document.getElementById('cfg-title').value,
+      transId: document.getElementById('cfg-transid').value,
+      segments: document.getElementById('cfg-segments').value,
+      category: '1, 2',
+      keyword: '1, 2',
+      uid20: 'test',
+      manufacturer: "",
+      model: "",
+      osName: "",
+      osVersion: "",
+      partnerSkipOffset: 7,
+      vastLoadTimeout: 5,
+      mediaLoadTimeout: 10,
+      bufferingVideoTimeout: 10,
+      alwaysCustomSkip: true,
+      isAutoRequestFocus: false,
+      bitrate: 1024,
+      skipText: "`Bỏ qua sau ${countdown} giây`",
+      skippableText: "`Bỏ qua quảng cáo`",
+      nonSkippableText: "`Quảng cáo kết thúc sau ${countdown} giây`",
+      isUsePartnerSkipButton: true
+    };
+  }
+  
+  function initSdk() {
+    if (!window.WI) {
+      addLog('error', 'ERROR', 'WI global không tìm thấy — đã build dist/web-ima.js chưa?');
+      setSdkState('Error');
+      return;
+    }
+    
+    var config = buildConfig();
+    
+    addLog('sdk', 'SDK', 'Khởi tạo WI.InstreamSdk…',
+      'env=' + config.env + ' | tenant=' + config.tenantId +
+      ' | stream=' + config.streamId + ' | channel=' + config.channelId);
+    setSdkState('Init…');
+    
+    try {
+      wiiSdk = new WI.InstreamSdk(config);
+      addLog('sdk', 'SDK', '✅ WiiSdk instance tạo thành công');
+      
+      wiiSdk.start().then(function () {
+        addLog('sdk', 'SDK', '✅ start() hoàn tất — ad schedule loaded');
+        setSdkState('Ready');
+      }).catch(function (err) {
+        addLog('error', 'ERROR', 'start() thất bại: ' + (err && err.message ? err.message : String(err)));
+        setSdkState('Error');
+      });
+      
+      if (typeof wiiSdk.setDuration === 'function' && !isNaN(video.duration)) {
+        wiiSdk.setDuration(video.duration);
+      }
+      
+    } catch (err) {
+      addLog('error', 'ERROR', 'new InstreamSdk() throw: ' + err.message);
+      setSdkState('Error');
+    }
+  }
+  
+  // ──────────────────────────────────────────────
+  // 6. window.postMessage → SDK Events
+  // ──────────────────────────────────────────────
+  window.addEventListener('message', function (event) {
+    if (!event.data || !event.data.type) return;
+    var type = event.data.type;
+    
+    // Bỏ qua internal WII_ events từ AdBreakManager (chúng đã được AdManager re-dispatch)
+    if (type.indexOf('WII_') === 0) return;
+    
+    var payload = JSON.stringify(event.data, null, 0)
+      .replace(/^{/, '').replace(/}$/, '').slice(0, 200);
+    
+    // ────────────────────────────
+    // PAUSE_CONTENT → playAd
+    // ────────────────────────────
+    if (type === 'PAUSE_CONTENT') {
+      addLog('event', 'PAUSE', '📛 Content paused — triggering playAd()', payload);
+      if (!video.paused) video.pause();
+      adsContainer.classList.add('active');
+      adBadge.classList.add('show');
+      
+      if (wiiSdk && typeof wiiSdk.playAd === 'function') {
+        wiiSdk.playAd(video.muted);
+        addLog('sdk', 'SDK', 'playAd() gọi thành công');
+      }
+      return;
+    }
+    
+    // ────────────────────────────
+    // Ad Lifecycle Events
+    // ────────────────────────────
+    if (type === 'START') {
+      isAdPlaying = true;
+      setAdState('Playing');
+      addLog('event', 'START', '🟢 Ad bắt đầu phát', payload);
+      return;
+    }
+    
+    if (type === 'IMPRESSION') {
+      addLog('event', 'IMPRSS', '👁 Impression fired', payload);
+      return;
+    }
+    
+    if (type === 'CLICK') {
+      addLog('event', 'CLICK', '🖱 Ad clicked', payload);
+      return;
+    }
+    
+    if (type === 'COMPLETE') {
+      setAdState('Complete');
+      addLog('event', 'COMPL', '✅ Ad complete', payload);
+      return;
+    }
+    
+    if (type === 'SKIPPED') {
+      setAdState('Skipped');
+      addLog('event', 'SKIP', '⏭ Ad skipped', payload);
+      return;
+    }
+    
+    if (type === 'ERROR') {
+      setAdState('Error');
+      addLog('error', 'ERROR', '❌ Ad error: ' + (event.data.errorMessage || '?'),
+        'code=' + (event.data.errorCode || '?'));
+      return;
+    }
+    
+    if (type === 'AD_PROGRESS') {
+      // update pill only — quá nhiều event nên không log từng cái
+      var cur = event.data.currentTime || 0;
+      var dur = event.data.duration || 0;
+      pillAd.querySelector('b').textContent = 'Playing ' + cur.toFixed(0) + '/' + dur.toFixed(0) + 's';
+      return;
+    }
+    
+    if (type === 'WII_REPORT_PAYLOAD') {
+      // update pill only — quá nhiều event nên không log từng cái
+      var cur = event.data.currentTime || 0;
+      var dur = event.data.duration || 0;
+      pillAd.querySelector('b').textContent = 'Report payload' + cur.toFixed(0) + '/' + dur.toFixed(0) + 's';
+      return;
+    }
+    
+    // ────────────────────────────
+    // ALL_ADS_COMPLETED → resume
+    // ────────────────────────────
+    if (type === 'ALL_ADS_COMPLETED') {
+      isAdPlaying = false;
+      breaksPlayed++;
+      document.getElementById('footer-breaks-played').textContent = breaksPlayed;
+      setAdState('Done');
+      adsContainer.classList.remove('active');
+      adBadge.classList.remove('show');
+      addLog('event', 'DONE', '🏁 ALL_ADS_COMPLETED — resuming content');
+      pillBreaks.querySelector('b').textContent = breaksPlayed;
+      
+      if (video.paused) {
+        video.play().catch(function () { });
+      }
+      return;
+    }
+    
+    if (type === 'ADS_EMPTY') {
+      setAdState('Empty');
+      addLog('warn', 'WARN', '⚠️ ADS_EMPTY — không có quảng cáo nào', payload);
+      return;
+    }
+    
+    // Catch-all cho các event khác
+    addLog('info', 'MSG', type, payload);
+  });
+  
+  // ──────────────────────────────────────────────
+  // 7. BUTTON ACTIONS
+  // ──────────────────────────────────────────────
+  document.getElementById('btn-load').addEventListener('click', function () {
+    // Update video src if changed
+    var newUrl = document.getElementById('cfg-video-url').value.trim();
+    if (newUrl && video.currentSrc !== newUrl) {
+      video.src = newUrl;
+      video.load();
+      addLog('player', 'PLAYER', 'Video URL changed → ' + newUrl);
+    }
+    
+    // Destroy old SDK if any
+    if (wiiSdk) {
+      addLog('sdk', 'SDK', 'Destroying existing SDK before re-init…');
+      wiiSdk.destroy();
+      wiiSdk = null;
+      adsInitialized = false;
+    }
+    
+    setSdkState('Init…');
+    initSdk();
+    adsInitialized = true;
+    
+    if (video.paused) {
+      video.play().catch(function (e) {
+        addLog('warn', 'WARN', 'video.play() blocked: ' + e.message + ' — click Play manually');
+      });
+    }
+  });
+  
+  document.getElementById('btn-destroy').addEventListener('click', function () {
+    if (!wiiSdk) {
+      addLog('warn', 'WARN', 'SDK chưa được khởi tạo');
+      return;
+    }
+    wiiSdk.destroy();
+    wiiSdk = null;
+    adsInitialized = false;
+    isAdPlaying = false;
+    adsContainer.classList.remove('active');
+    adBadge.classList.remove('show');
+    setSdkState('Destroyed');
+    setAdState('—');
+    addLog('sdk', 'SDK', '🗑 SDK destroyed');
+  });
+  
+  document.getElementById('btn-playadnow').addEventListener('click', function () {
+    if (!wiiSdk || typeof wiiSdk.playAd !== 'function') {
+      addLog('warn', 'WARN', 'SDK chưa sẵn sàng');
+      return;
+    }
+    addLog('sdk', 'SDK', '▶ Manual playAd() called');
+    wiiSdk.playAd(video.muted);
+  });
+  
+  document.getElementById('btn-skip').addEventListener('click', function () {
+    if (!wiiSdk || typeof wiiSdk.skip !== 'function') {
+      addLog('warn', 'WARN', 'SDK chưa sẵn sàng hoặc không có skip()');
+      return;
+    }
+    addLog('sdk', 'SDK', '⏭ Manual skip() called');
+    wiiSdk.skip();
+  });
+  
+  document.getElementById('btn-seek-mid').addEventListener('click', function () {
+    if (isNaN(video.duration)) {
+      addLog('warn', 'WARN', 'Video chưa load xong, không thể seek');
+      return;
+    }
+    var mid = video.duration * 0.5;
+    video.currentTime = mid;
+    addLog('player', 'PLAYER', 'Seeked to 50% → ' + mid.toFixed(2) + 's');
+  });
+  
+  document.getElementById('btn-print-config').addEventListener('click', function () {
+    var cfg = buildConfig();
+    addLog('sdk', 'SDK', '📋 Current config:', JSON.stringify(cfg));
+    console.log('[DEBUG] WI config:', cfg);
+    console.log('[DEBUG] wiiSdk instance:', wiiSdk);
+    console.log('[DEBUG] WI global:', window.WI);
+  });
+  
+  // ──────────────────────────────────────────────
+  // 8. LOG FILTER BUTTONS
+  // ──────────────────────────────────────────────
+  document.querySelectorAll('.filter-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.filter-btn').forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      currentFilter = btn.dataset.filter;
+      reRenderLog();
+    });
+  });
+  
+  document.getElementById('btn-clear-log').addEventListener('click', function () {
+    logEntries = [];
+    eventLog.innerHTML = '';
+    eventCount = 0;
+    document.getElementById('footer-event-count').textContent = '0';
+  });
+  
+  document.getElementById('btn-export-log').addEventListener('click', function () {
+    var lines = logEntries.map(function (e) {
+      return '[' + e.ts + '] [' + e.tagText + '] ' + e.message + (e.meta ? ' | ' + e.meta : '');
+    });
+    var blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'wiinvent-debug-' + Date.now() + '.log';
+    a.click();
+    addLog('info', 'INFO', 'Log exported (' + logEntries.length + ' entries)');
+  });
+  
+  // ──────────────────────────────────────────────
+  // 9. VAST INSPECTOR (toggle)
+  // ──────────────────────────────────────────────
+  var vastOpen = false;
+  document.getElementById('vast-toggle').addEventListener('click', function () {
+    vastOpen = !vastOpen;
+    vastBody.style.display = vastOpen ? 'block' : 'none';
+    document.getElementById('vast-toggle-icon').textContent = vastOpen ? '▲ collapse' : '▼ expand';
+  });
+  
+  // Monkey-patch fetch để intercept VAST XML
+  (function () {
+    var origFetch = window.fetch;
+    window.fetch = function (url, opts) {
+      if (typeof url === 'string' && (url.indexOf('vast') !== -1 || url.indexOf('adserving') !== -1)) {
+        addLog('sdk', 'FETCH', 'Fetching: ' + url.slice(0, 120));
+        // Show VMAP URL in footer
+        if (url.indexOf('campaign') !== -1) {
+          document.getElementById('footer-vmap-url').textContent = '🌐 ' + url.slice(0, 100) + '…';
+        }
+      }
+      var promise = origFetch.apply(this, arguments);
+      if (typeof url === 'string' && url.indexOf('vast') !== -1) {
+        promise.then(function (res) {
+          var clone = res.clone();
+          clone.text().then(function (text) {
+            if (text && text.indexOf('<VAST') !== -1) {
+              addLog('sdk', 'VAST', '📥 VAST XML received (' + text.length + ' chars)');
+              vastBody.textContent = text.slice(0, 5000) + (text.length > 5000 ? '\n…(truncated)' : '');
+            }
+          });
+        });
+      }
+      return promise;
+    };
+  })();
+  
+  // ──────────────────────────────────────────────
+  // 10. STARTUP LOG
+  // ──────────────────────────────────────────────
+  addLog('info', 'INFO', '🟡 Debug sample loaded. WI available: ' + (typeof WI !== 'undefined'));
+  if (typeof WI !== 'undefined') {
+    addLog('info', 'INFO', 'WI.ENV keys: ' + Object.keys(WI.ENV || WI.Environment || {}).join(', '));
+  } else {
+    addLog('error', 'ERROR', 'WI global KHÔNG TỒN TẠI! Kiểm tra dist/web-ima.js đã được build chưa.');
+  }
+  addLog('info', 'INFO', 'Nhấn ▶ Play hoặc 🚀 Load & Start SDK để bắt đầu.');
+</script>
+</body>
+
+</html>
