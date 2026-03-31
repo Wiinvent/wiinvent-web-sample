@@ -1,4 +1,5 @@
 # Ad SDK Documentation
+
 ## Cài đặt
 
 ### Import Sdk
@@ -49,25 +50,25 @@ const welcomeSdk = new AdSDK({
 
 ## Bảng tham số khởi tạo
 
-| Tham số | Kiểu | Bắt buộc | Mặc định | Mô tả                                                                        |
-|---------|------|----------|----------|------------------------------------------------------------------------------|
-| `env` | String | Có | `"SANDBOX"` | Môi trường: `AdSDK.ENV.SANDBOX` hoặc `AdSDK.ENV.PRODUCTION`                  |
-| `type` | String | Có | `"DISPLAY"` | Loại ads: `AdSDK.TYPE.DISPLAY`, `AdSDK.TYPE.OUTSTREAM`, `AdSDK.TYPE.WELCOME` |
-| `tenantId` | String | Có | `"14"` | ID của tenant                                                                |
-| `streamId` | String | Có | `""` | ID của stream/content                                                        |
-| `channelId` | String | Có | `""` | ID của kênh                                                                  |
-| `platform` | String | Có | `"WEB"` | Nền tảng: `TV`, `WEB`, `ANDROID`, `IOS`                                      |
-| `isUsePartnerSkipButton` | Boolean | Có | `"WEB"` | Có hay không hiển thị nút dismiss của wii                                      |
-| `debug` | Boolean | Không | `false` | Bật chế độ debug log                                                         |
-| `title` | String | Không | `""` | Tiêu đề nội dung                                                             |
-| `transId` | String | Không | `""` | Transaction ID                                                               |
-| `category` | String | Không | `""` | Category list                                                                |
-| `keyword` | String | Không | `""` | Keyword                                                                      |
-| `age` | String | Không | `"0"` | Tuổi người dùng                                                              |
-| `gender` | String | Không | `"NONE"` | Giới tính: `MALE`, `FEMALE`, `OTHER`, `NONE`                                 |
-| `segments` | String | Không | `""` | Segment list                                                                 |
-| `width` | String/Number | Không | `""` | Chiều rộng container (px)                                                    |
-| `height` | String/Number | Không | `""` | Chiều cao container (px)                                                     |
+| Tham số                  | Kiểu          | Bắt buộc | Mặc định    | Mô tả                                                                        |
+|--------------------------|---------------|----------|-------------|------------------------------------------------------------------------------|
+| `env`                    | String        | Có       | `"SANDBOX"` | Môi trường: `AdSDK.ENV.SANDBOX` hoặc `AdSDK.ENV.PRODUCTION`                  |
+| `type`                   | String        | Có       | `"DISPLAY"` | Loại ads: `AdSDK.TYPE.DISPLAY`, `AdSDK.TYPE.OUTSTREAM`, `AdSDK.TYPE.WELCOME` |
+| `tenantId`               | String        | Có       | `"14"`      | ID của tenant                                                                |
+| `streamId`               | String        | Có       | `""`        | ID của stream/content                                                        |
+| `channelId`              | String        | Có       | `""`        | ID của kênh                                                                  |
+| `platform`               | String        | Có       | `"WEB"`     | Nền tảng: `TV`, `WEB`, `ANDROID`, `IOS`                                      |
+| `isUsePartnerSkipButton` | Boolean       | Có       | `"WEB"`     | Có hay không hiển thị nút dismiss của wii                                    |
+| `debug`                  | Boolean       | Không    | `false`     | Bật chế độ debug log                                                         |
+| `title`                  | String        | Không    | `""`        | Tiêu đề nội dung                                                             |
+| `transId`                | String        | Không    | `""`        | Transaction ID                                                               |
+| `category`               | String        | Không    | `""`        | Category list                                                                |
+| `keyword`                | String        | Không    | `""`        | Keyword                                                                      |
+| `age`                    | String        | Không    | `"0"`       | Tuổi người dùng                                                              |
+| `gender`                 | String        | Không    | `"NONE"`    | Giới tính: `MALE`, `FEMALE`, `OTHER`, `NONE`                                 |
+| `segments`               | String        | Không    | `""`        | Segment list                                                                 |
+| `width`                  | String/Number | Không    | `""`        | Chiều rộng container (px)                                                    |
+| `height`                 | String/Number | Không    | `""`        | Chiều cao container (px)                                                     |
 
 ## Các phương thức chính
 
@@ -81,12 +82,12 @@ sdk.start(domId, bannerType, adSize, positionId, () => {})
 
 **Tham số:**
 
-| Tham số | Kiểu | Bắt buộc | Mô tả |
-|---------|------|----------|-------|
-| `domId` | String/Element | Có* | ID của element hoặc DOM element (*không bắt buộc với Welcome ads) |
-| `bannerType` | String | Có | Loại banner: `"DISPLAY"` hoặc `"OVERLAY"` |
-| `adSize` | String | Có | Kích thước: `"MINI_BANNER"`, `"SUBPAGE_BANNER"`, `"HOMEPAGE_LARGE_BANNER"`, `"PAUSE_BANNER"` |
-| `positionId` | String | Có | ID vị trí quảng cáo |
+| Tham số      | Kiểu           | Bắt buộc | Mô tả                                                                                        |
+|--------------|----------------|----------|----------------------------------------------------------------------------------------------|
+| `domId`      | String/Element | Có*      | ID của element hoặc DOM element (*không bắt buộc với Welcome ads)                            |
+| `bannerType` | String         | Có       | Loại banner: `"DISPLAY"` hoặc `"OVERLAY"`                                                    |
+| `adSize`     | String         | Có       | Kích thước: `"MINI_BANNER"`, `"SUBPAGE_BANNER"`, `"HOMEPAGE_LARGE_BANNER"`, `"PAUSE_BANNER"` |
+| `positionId` | String         | Có       | ID vị trí quảng cáo                                                                          |
 
 **Ví dụ:**
 
@@ -111,9 +112,9 @@ sdk.dismiss(domId)
 
 **Tham số:**
 
-| Tham số | Kiểu | Bắt buộc | Mô tả |
-|---------|------|----------|-------|
-| `domId` | String | Không | ID của element. Nếu không truyền, xóa tất cả ads |
+| Tham số | Kiểu   | Bắt buộc | Mô tả                                            |
+|---------|--------|----------|--------------------------------------------------|
+| `domId` | String | Không    | ID của element. Nếu không truyền, xóa tất cả ads |
 
 **Ví dụ:**
 
@@ -139,10 +140,10 @@ sdk.on(eventName, callback)
 
 **Tham số:**
 
-| Tham số | Kiểu | Bắt buộc | Mô tả |
-|---------|------|----------|-------|
-| `eventName` | String | Có | Tên event |
-| `callback` | Function | Có | Hàm xử lý khi event xảy ra |
+| Tham số     | Kiểu     | Bắt buộc | Mô tả                      |
+|-------------|----------|----------|----------------------------|
+| `eventName` | String   | Có       | Tên event                  |
+| `callback`  | Function | Có       | Hàm xử lý khi event xảy ra |
 
 **Ví dụ:**
 
@@ -158,23 +159,24 @@ sdk.on('error', (data) => {
 
 ## Danh sách Events
 
-| Event | Mô tả | Dữ liệu trả về |
-|-------|-------|----------------|
-| `start` | SDK bắt đầu khởi tạo quảng cáo | `{ domId }` |
-| `request` | Bắt đầu gọi API lấy quảng cáo | `{ domId }` |
-| `loaded` | Dữ liệu quảng cáo đã được tải về | `{ domId, data }` |
-| `rendered` | Quảng cáo đã render xong | `{ domId, ad }` |
-| `impression` | Quảng cáo được hiển thị (tracking) | `{ domId }` |
-| `click` | Người dùng click vào quảng cáo | `{ domId, ad }` |
-| `skip` | Người dùng bỏ qua quảng cáo | `{ domId, ad }` |
-| `dismiss` | Quảng cáo đã bị xóa | `{ domId }` |
-| `destroy` | SDK đã bị hủy hoàn toàn | `{}` |
-| `error` | Có lỗi xảy ra | `{ domId, err }` |
-| `inDelay` | OVERLAY banner đang trong thời gian delay | `{ domId, remainingSeconds, delayOffSet }` |
+| Event        | Mô tả                                     | Dữ liệu trả về                             |
+|--------------|-------------------------------------------|--------------------------------------------|
+| `start`      | SDK bắt đầu khởi tạo quảng cáo            | `{ domId }`                                |
+| `request`    | Bắt đầu gọi API lấy quảng cáo             | `{ domId }`                                |
+| `loaded`     | Dữ liệu quảng cáo đã được tải về          | `{ domId, data }`                          |
+| `rendered`   | Quảng cáo đã render xong                  | `{ domId, ad }`                            |
+| `impression` | Quảng cáo được hiển thị (tracking)        | `{ domId }`                                |
+| `click`      | Người dùng click vào quảng cáo            | `{ domId, ad }`                            |
+| `skip`       | Người dùng bỏ qua quảng cáo               | `{ domId, ad }`                            |
+| `dismiss`    | Quảng cáo đã bị xóa                       | `{ domId }`                                |
+| `destroy`    | SDK đã bị hủy hoàn toàn                   | `{}`                                       |
+| `error`      | Có lỗi xảy ra                             | `{ domId, err }`                           |
+| `inDelay`    | OVERLAY banner đang trong thời gian delay | `{ domId, remainingSeconds, delayOffSet }` |
 
 ## Constants (Hằng số)
 
 ### Environment
+
 ```javascript
 AdSDK.ENV = {
   SANDBOX: "SANDBOX",
@@ -183,6 +185,7 @@ AdSDK.ENV = {
 ```
 
 ### Type
+
 ```javascript
 AdSDK.TYPE = {
   DISPLAY: "DISPLAY",
@@ -191,6 +194,7 @@ AdSDK.TYPE = {
 ```
 
 ### Platform
+
 ```javascript
 AdSDK.PLATFORM = {
   TV: "TV",
@@ -201,6 +205,7 @@ AdSDK.PLATFORM = {
 ```
 
 ### Gender
+
 ```javascript
 AdSDK.GENDER = {
   MALE: "MALE",
@@ -211,6 +216,7 @@ AdSDK.GENDER = {
 ```
 
 ### Ad Size
+
 ```javascript
 AdSDK.AD_SIZE = {
   MINI_BANNER: "MINI_BANNER",
@@ -221,6 +227,7 @@ AdSDK.AD_SIZE = {
 ```
 
 ### Banner Type
+
 ```javascript
 AdSDK.BANNER_TYPE = {
   DISPLAY: "DISPLAY",

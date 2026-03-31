@@ -5,6 +5,7 @@ SDK:
 ````
 
 1. Hướng dẫn tích hợp:
+
 ### 📄 Tài liệu đính kèm
 
 👉 [Tải xuống WI Instream Ad SDK Guide (PDF)](./IntegrationGuide.pdf)
@@ -231,6 +232,7 @@ progress.addEventListener('input', () => {
   video.currentTime = seekTime;
 });
 ```
+
 2.1. Diagram for instream
 
 ![Instream Diagram](/diagram.jpg)
