@@ -35,12 +35,12 @@ wiiSdk = new AdSDK({
 ```
 
 ##### 2.2 Banner Ads
-wiiSdk = new AdSDK({  
-uid: "",
-uil: "",
-});
-```js
 
+```js
+wiiSdk = new AdSDK({  
+  uid: "",
+  uil: "",
+});
 ```
 
 ##### 2.3 Display Banner / Overlay Banner Ads
