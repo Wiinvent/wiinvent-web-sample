@@ -28,7 +28,9 @@ Từ `3.0.0`, tất cả request data đều hỗ trợ 2 builder mới:
 `config init` không còn `"uid": ""`. Cập nhật như sau:
 
 ```js
-wiiSdk = new AdSDK({  
+wiiSdk = new AdSDK({
+  env: AdSDK.ENV.SANDBOX,
+  ...,
   uid: "",
   uil: "",
 });
@@ -37,7 +39,9 @@ wiiSdk = new AdSDK({
 ##### 2.2 Banner Ads
 
 ```js
-wiiSdk = new AdSDK({  
+wiiSdk = new AdSDK({
+  env: AdSDK.ENV.SANDBOX,
+  ...,
   uid: "",
   uil: "",
 });
@@ -46,7 +50,9 @@ wiiSdk = new AdSDK({
 ##### 2.3 Display Banner / Overlay Banner Ads
 
 ```js
-wiiSdk = new AdSDK({  
+wiiSdk = new AdSDK({
+  env: AdSDK.ENV.SANDBOX,
+  ...,
   uid: "",
   uil: "",
 });
@@ -55,7 +61,9 @@ wiiSdk = new AdSDK({
 ##### 2.4 Welcome Ads
 
 ```js
-wiiSdk = new AdSDK({  
+wiiSdk = new AdSDK({
+  env: AdSDK.ENV.SANDBOX,
+  ...,
   uid: "",
   uil: "",
 });
