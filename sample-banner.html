@@ -178,6 +178,51 @@
       background: #f8f9ff;
     }
     
+    .multi-banner-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    
+    .banner-test-item {
+      min-width: 0;
+      padding: 16px;
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+    }
+    
+    .banner-test-item h3 {
+      margin-bottom: 12px;
+      color: #333;
+      font-size: 15px;
+    }
+    
+    .banner-test-item .ad-preview {
+      height: 220px;
+    }
+    
+    .report-result {
+      min-height: 20px;
+      margin-top: 10px;
+      color: #555;
+      font-family: monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+    
+    button:disabled {
+      cursor: not-allowed;
+      opacity: .5;
+    }
+    
+    @media (max-width: 768px) {
+      .multi-banner-grid,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
     .video-container {
       position: relative;
       width: 100%;
@@ -261,8 +306,12 @@
             <input type="text" id="channelId" placeholder="e.g., 123456" value="">
           </div>
           <div class="form-group">
-            <label>Position ID</label>
-            <input type="text" id="positionId" placeholder="e.g., HOME_1" value="HOME_1">
+            <label>Position ID - Banner A</label>
+            <input type="text" id="positionIdA" placeholder="e.g., HOME_1" value="HOME_1">
+          </div>
+          <div class="form-group">
+            <label>Position ID - Banner B</label>
+            <input type="text" id="positionIdB" placeholder="e.g., HOME_2" value="HOME_2">
           </div>
           <div class="form-group">
             <label>Banner Type</label>
@@ -283,13 +332,33 @@
       </div>
       
       <div class="card" style="margin-bottom: 20px;">
-        <h2>Display Banner</h2>
-        <div class="ad-preview" id="adPreview">
-          <span>Ad will appear here</span>
+        <h2>Multi-banner external report test</h2>
+        <div class="multi-banner-grid">
+          <section class="banner-test-item" aria-labelledby="bannerATitle">
+            <h3 id="bannerATitle">Banner A · <code>adPreviewA</code></h3>
+            <div class="ad-preview" id="adPreviewA">
+              <span>Banner A will appear here</span>
+            </div>
+            <div class="button-group" style="margin-top: 12px;">
+              <button class="btn-secondary" id="btnReportA" disabled>Report Banner A</button>
+            </div>
+            <div class="report-result" id="reportResultA" role="status" aria-live="polite">Chưa có quảng cáo để report.</div>
+          </section>
+          
+          <section class="banner-test-item" aria-labelledby="bannerBTitle">
+            <h3 id="bannerBTitle">Banner B · <code>adPreviewB</code></h3>
+            <div class="ad-preview" id="adPreviewB">
+              <span>Banner B will appear here</span>
+            </div>
+            <div class="button-group" style="margin-top: 12px;">
+              <button class="btn-secondary" id="btnReportB" disabled>Report Banner B</button>
+            </div>
+            <div class="report-result" id="reportResultB" role="status" aria-live="polite">Chưa có quảng cáo để report.</div>
+          </section>
         </div>
         <div class="button-group" style="margin-top: 16px;">
-          <button class="btn-success" id="btnStartDisplay">Start Display</button>
-          <button class="btn-danger" id="btnDismissDisplay">Dismiss</button>
+          <button class="btn-success" id="btnStartDisplays">Start Both Banners</button>
+          <button class="btn-danger" id="btnDismissDisplays">Dismiss Both</button>
         </div>
       </div>
       
@@ -311,7 +380,7 @@
 </div>
 
 <script src="https://ima-sdk.netlify.app/3.0.0/banner-ima.js"></script>
-<!--    <script src="./dist/banner-ima.js"></script>-->
+
 <script>
   'use strict';
   var sdk = null, welcomeSdk = null;
@@ -319,6 +388,20 @@
   var video = document.getElementById('videoDemoMain');
   var videoAdSlot = document.getElementById('videoAdSlot');
   var isSeeking = false, pauseTimeout = null;
+  var reportSlots = {
+    adPreviewA: {
+      button: document.getElementById('btnReportA'),
+      result: document.getElementById('reportResultA'),
+      adId: null,
+      pendingAdId: null
+    },
+    adPreviewB: {
+      button: document.getElementById('btnReportB'),
+      result: document.getElementById('reportResultB'),
+      adId: null,
+      pendingAdId: null
+    }
+  };
   
   function updateStatus(status) {
     statusEl.className = 'status-badge ' + status;
@@ -326,17 +409,59 @@
       status === 'loading' ? '⏳ Loading...' : '✗ Error';
   }
   
+  function resetReportSlot(domId, message) {
+    var slot = reportSlots[domId];
+    if (!slot) return;
+    slot.adId = null;
+    slot.pendingAdId = null;
+    slot.button.disabled = true;
+    slot.result.textContent = message || 'Chưa có quảng cáo để report.';
+  }
+  
+  function enableReportSlot(domId, ad) {
+    var slot = reportSlots[domId];
+    if (!slot || !ad) return;
+    slot.adId = ad.id || '';
+    slot.pendingAdId = null;
+    slot.button.disabled = false;
+    slot.result.textContent = 'Ready · expected adId: ' + (slot.adId || '(empty)');
+  }
+  
+  function submitExternalReport(domId) {
+    var slot = reportSlots[domId];
+    if (!sdk || !slot || !slot.adId) return;
+    
+    slot.pendingAdId = slot.adId;
+    slot.button.disabled = true;
+    slot.result.textContent = 'Sending · domId: ' + domId + ' · expected adId: ' + slot.pendingAdId;
+    
+    sdk.submitReport(domId, ['MISLEADING'], function (status) {
+      if (status === 'ERROR') {
+        slot.result.textContent = 'ERROR · report request failed for ' + domId;
+        slot.button.disabled = !slot.adId;
+        slot.pendingAdId = null;
+      }
+    });
+  }
+  
   function attachEvents(sdkInstance) {
     if (!sdkInstance) return;
-    var events = ['start', 'loaded', 'rendered', 'skip', 'click', 'dismiss', 'destroy', 'error'];
+    var events = ['start', 'loaded', 'rendered', 'skip', 'click', 'dismiss', 'destroy', 'error', 'report_submitted', 'report_failed'];
     events.forEach(function (event) {
       sdkInstance.on(event, function (data) {
+        console.log('SDK Event:', event, data);
+        
         var domId = data && data.domId;
-        if (domId === 'adPreview') {
-          if (event === 'rendered') {
-            document.getElementById('adPreview').classList.add('active');
-          } else if (event === 'skip' || event === 'dismiss') {
-            document.getElementById('adPreview').classList.remove('active');
+        if (reportSlots[domId]) {
+          if (event === 'start') {
+            document.getElementById(domId).classList.remove('active');
+            resetReportSlot(domId, 'Loading banner...');
+          } else if (event === 'rendered' && data.ad) {
+            document.getElementById(domId).classList.add('active');
+            enableReportSlot(domId, data.ad);
+          } else if (event === 'skip' || event === 'dismiss' || event === 'error') {
+            document.getElementById(domId).classList.remove('active');
+            resetReportSlot(domId);
           }
         }
         if (domId === 'videoAdSlot') {
@@ -345,6 +470,23 @@
           } else if (event === 'skip' || event === 'dismiss') {
             document.getElementById('videoAdSlot').classList.remove('active');
           }
+        }
+        
+        // Handle report events
+        if (event === 'report_submitted') {
+          console.log('Report submitted event:', data);
+          var reportSlot = reportSlots[domId];
+          if (reportSlot) {
+            var isCorrectAd = reportSlot.pendingAdId === data.adId;
+            reportSlot.result.textContent = (isCorrectAd ? 'PASS' : 'FAIL') +
+              ' · domId: ' + domId +
+              ' · expected adId: ' + reportSlot.pendingAdId +
+              ' · submitted adId: ' + data.adId;
+            reportSlot.pendingAdId = null;
+            reportSlot.button.disabled = !reportSlot.adId;
+          }
+        } else if (event === 'report_failed') {
+          console.error('Report failed event:', data);
         }
       });
     });
@@ -369,9 +511,10 @@
         keyword: "test",
         age: "25",
         gender: AdSDK.GENDER.MALE,
-        uid: "",
+        uid: "banner-debug-user",
         uil: "",
-        isUsePartnerSkipButton: true
+        // Third party renders report buttons in this sample.
+        isUsePartnerSkipButton: false
       });
       
       welcomeSdk = new AdSDK({
@@ -387,7 +530,7 @@
         keyword: "test",
         age: "25",
         gender: AdSDK.GENDER.MALE,
-        uid: "",
+        uid: "welcome-debug-user",
         uil: "",
         isUsePartnerSkipButton: true
       });
@@ -406,17 +549,31 @@
     });
   });
   
-  document.getElementById('btnStartDisplay').addEventListener('click', function () {
+  document.getElementById('btnStartDisplays').addEventListener('click', function () {
     if (!sdk) return;
-    var positionId = document.getElementById('positionId').value;
+    var positionIdA = document.getElementById('positionIdA').value;
+    var positionIdB = document.getElementById('positionIdB').value;
     var bannerType = document.getElementById('bannerType').value;
-    sdk.start('adPreview', 'DISPLAY', bannerType, positionId, function (result) {
+    sdk.start('adPreviewA', 'DISPLAY', bannerType, positionIdA, function (result) {
+      console.log('Banner A callback:', result);
+    });
+    sdk.start('adPreviewB', 'DISPLAY', bannerType, positionIdB, function (result) {
+      console.log('Banner B callback:', result);
     });
   });
   
-  document.getElementById('btnDismissDisplay').addEventListener('click', function () {
+  document.getElementById('btnDismissDisplays').addEventListener('click', function () {
     if (!sdk) return;
-    sdk.dismiss('adPreview');
+    sdk.dismiss('adPreviewA');
+    sdk.dismiss('adPreviewB');
+  });
+  
+  document.getElementById('btnReportA').addEventListener('click', function () {
+    submitExternalReport('adPreviewA');
+  });
+  
+  document.getElementById('btnReportB').addEventListener('click', function () {
+    submitExternalReport('adPreviewB');
   });
   
   document.getElementById('btnPlayVideo').addEventListener('click', function () {
