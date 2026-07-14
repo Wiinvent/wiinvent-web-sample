@@ -389,7 +389,7 @@
   <span>Breaks: <b id="footer-breaks-played">0</b></span>
 </footer>
 <script src="https://ima-sdk.netlify.app/3.0.0/web-ima.js"></script>
-<!--    <script src="./dist/web-ima.js"></script>-->
+
 <script>
   'use strict';
   var wiiSdk = null, adsInitialized = false, isAdPlaying = false, breaksPlayed = 0;
@@ -493,7 +493,7 @@
       title: document.getElementById('cfg-title').value,
       transId: document.getElementById('cfg-transid').value,
       segments: document.getElementById('cfg-segments').value,
-      category: '1, 2', keyword: '1, 2', uid: '', uil: '',
+      category: '1, 2', keyword: '1, 2', uid: 'test', uil: '',
       manufacturer: '', model: '', osName: '', osVersion: '',
       partnerSkipOffset: 7, vastLoadTimeout: 5, mediaLoadTimeout: 10,
       bufferingVideoTimeout: 10, alwaysCustomSkip: true, isAutoRequestFocus: false,
