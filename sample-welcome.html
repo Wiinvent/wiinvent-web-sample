@@ -326,6 +326,10 @@
         <div class="k">Ad Playback</div>
         <div class="v" id="adPlaybackText">idle</div>
       </div>
+      <div class="row">
+        <div class="k">Report callback</div>
+        <div class="v" id="reportStatusText" aria-live="polite">—</div>
+      </div>
       
       <div class="actions">
         <button id="btnPower" class="btn btn-primary" type="button" tabindex="1">
@@ -391,6 +395,7 @@
 <div id="adTestControls" class="ad-test-controls" role="group" aria-label="Điều khiển quảng cáo thử nghiệm">
   <button id="btnPauseAd" class="btn" type="button" tabindex="3">⏸ pauseAd()</button>
   <button id="btnResumeAd" class="btn" type="button" tabindex="4">▶ resumeAd()</button>
+  <button id="btnSubmitReport" class="btn" type="button" tabindex="5">⚑ submitReport()</button>
 </div>
 
 <!-- SDK script -->
@@ -773,6 +778,7 @@
     wiiSdkWelcome = null;
     setText('initAdsText', 'false');
     setText('adPlaybackText', 'idle');
+    setText('reportStatusText', '—');
     setText('sdkBadge', 'SDK: chưa init');
     setTV(false);
     $('logBox').textContent = '[ready] Reset done.';
@@ -799,6 +805,19 @@
     wiiSdkWelcome.resumeAd(function (status) {
       setText('adPlaybackText', status === 'SUCCESS' ? 'playing' : 'resume error');
       log('[resumeAd] callback', status);
+    });
+  });
+  
+  $('btnSubmitReport').addEventListener('click', function () {
+    if (!wiiSdkWelcome || typeof wiiSdkWelcome.submitReport !== 'function') {
+      setText('reportStatusText', 'ERROR');
+      log('[submitReport] unavailable');
+      return;
+    }
+    setText('reportStatusText', 'Pending…');
+    wiiSdkWelcome.submitReport(['MISLEADING'], function (status) {
+      setText('reportStatusText', status);
+      log('[submitReport] callback', status);
     });
   });
   

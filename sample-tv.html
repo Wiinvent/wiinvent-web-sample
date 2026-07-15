@@ -376,6 +376,7 @@
       <div class="pill"><span>⏱ </span><b id="pill-time-val">0.0s</b></div>
       <div class="pill"><span>📏 </span><b id="pill-dur-val">—</b></div>
       <div class="pill"><span>Breaks </span><b id="pill-breaks-val">0</b></div>
+      <div class="pill"><span>Report </span><b id="report-status" aria-live="polite">—</b></div>
     </div>
   </div>
   <div class="config-panel">
@@ -432,8 +433,9 @@
       <button class="tv-btn" id="btn-skip-now" tabindex="33">⏭ skip()</button>
       <button class="tv-btn" id="btn-pause-ad" tabindex="34">⏸ pauseAd()</button>
       <button class="tv-btn" id="btn-resume-ad" tabindex="35">▶ resumeAd()</button>
-      <button class="tv-btn" id="btn-seek50" tabindex="36">⏩ 50%</button>
-      <button class="tv-btn" id="btn-seek0" tabindex="37">⏮ 0%</button>
+      <button class="tv-btn" id="btn-submit-report" tabindex="36">⚑ submitReport()</button>
+      <button class="tv-btn" id="btn-seek50" tabindex="37">⏩ 50%</button>
+      <button class="tv-btn" id="btn-seek0" tabindex="38">⏮ 0%</button>
     </div>
   </div>
 </div>
@@ -442,7 +444,6 @@
   <span>Breaks: <b id="footer-breaks">0</b></span>
 </footer>
 <script src="https://ima-sdk.netlify.app/3.0.0/tv-ima.js"></script>
-<!--    <script src="./dist/tv-ima.js"></script>-->
 <script>
   'use strict';
   var wiiSdk = null, adsInited = false, isAdPlaying = false, skipTimer = null, skipCountdown = 5, breaksPlayed = 0;
@@ -464,6 +465,12 @@
   
   function setAdState(s) {
     document.getElementById('pill-ad-val').textContent = s;
+  }
+  
+  function setReportState(s) {
+    var status = document.getElementById('report-status');
+    status.textContent = s;
+    status.parentNode.className = 'pill' + (s === 'SUCCESS' ? ' on' : s === 'ERROR' ? ' err' : '');
   }
   
   function updateTimePill() {
@@ -732,6 +739,7 @@
     adBadge.style.display = 'none';
     setSdkState('Destroyed');
     setAdState('—');
+    setReportState('—');
   });
   document.getElementById('btn-playadnow').addEventListener('click', function () {
     if (!wiiSdk) return;
@@ -771,6 +779,18 @@
         console.error('resumeAd failed');
         setAdState('Resume ERROR');
       }
+    });
+  });
+  document.getElementById('btn-submit-report').addEventListener('click', function () {
+    if (!wiiSdk || typeof wiiSdk.submitReport !== 'function') {
+      console.log('submitReport not available');
+      setReportState('ERROR');
+      return;
+    }
+    setReportState('Pending…');
+    wiiSdk.submitReport(['MISLEADING'], function (status) {
+      console.log('submitReport callback:', status);
+      setReportState(status);
     });
   });
   document.getElementById('btn-seek50').addEventListener('click', function () {
