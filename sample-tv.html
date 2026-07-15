@@ -430,8 +430,10 @@
       <button class="tv-btn danger" id="btn-destroy" tabindex="31">🗑 Destroy</button>
       <button class="tv-btn" id="btn-playadnow" tabindex="32">▶ playAd()</button>
       <button class="tv-btn" id="btn-skip-now" tabindex="33">⏭ skip()</button>
-      <button class="tv-btn" id="btn-seek50" tabindex="34">⏩ 50%</button>
-      <button class="tv-btn" id="btn-seek0" tabindex="35">⏮ 0%</button>
+      <button class="tv-btn" id="btn-pause-ad" tabindex="34">⏸ pauseAd()</button>
+      <button class="tv-btn" id="btn-resume-ad" tabindex="35">▶ resumeAd()</button>
+      <button class="tv-btn" id="btn-seek50" tabindex="36">⏩ 50%</button>
+      <button class="tv-btn" id="btn-seek0" tabindex="37">⏮ 0%</button>
     </div>
   </div>
 </div>
@@ -592,7 +594,7 @@
       isUseLegacy: document.getElementById('cfg-legacy').value === 'true',
       segments: document.getElementById('cfg-segments').value,
       title: 'TV Debug', transId: 'tv-debug-001', category: '1', keyword: 'tv,debug',
-      uid: '', uil: '', partnerSkipOffset: parseInt(document.getElementById('cfg-skip-offset').value, 10) || 5,
+      uid: 'tv-debug-user', uil: '', partnerSkipOffset: parseInt(document.getElementById('cfg-skip-offset').value, 10) || 5,
       isUsePartnerSkipButton: true, alwaysCustomSkip: true
     };
   }
@@ -653,6 +655,21 @@
       return;
     }
     if (type === 'PAUSED') {
+      setAdState('Paused');
+      return;
+    }
+    if (type === 'RESUMED') {
+      setAdState('Playing');
+      return;
+    }
+    if (type === 'AD_PAUSED') {
+      setAdState('Paused');
+      console.log('Ad paused via callback');
+      return;
+    }
+    if (type === 'AD_RESUMED') {
+      setAdState('Playing');
+      console.log('Ad resumed via callback');
       return;
     }
     if (type === 'COMPLETE') {
@@ -724,6 +741,38 @@
     if (!wiiSdk) return;
     wiiSdk.skip();
   });
+  document.getElementById('btn-pause-ad').addEventListener('click', function () {
+    if (!wiiSdk || typeof wiiSdk.pauseAd !== 'function') {
+      console.log('pauseAd not available');
+      setAdState('pauseAd unavailable');
+      return;
+    }
+    wiiSdk.pauseAd(function (status) {
+      console.log('pauseAd callback:', status);
+      if (status === 'SUCCESS') {
+        setAdState('Paused');
+      } else {
+        console.error('pauseAd failed');
+        setAdState('Pause ERROR');
+      }
+    });
+  });
+  document.getElementById('btn-resume-ad').addEventListener('click', function () {
+    if (!wiiSdk || typeof wiiSdk.resumeAd !== 'function') {
+      console.log('resumeAd not available');
+      setAdState('resumeAd unavailable');
+      return;
+    }
+    wiiSdk.resumeAd(function (status) {
+      console.log('resumeAd callback:', status);
+      if (status === 'SUCCESS') {
+        setAdState('Playing');
+      } else {
+        console.error('resumeAd failed');
+        setAdState('Resume ERROR');
+      }
+    });
+  });
   document.getElementById('btn-seek50').addEventListener('click', function () {
     if (isNaN(video.duration)) return;
     video.currentTime = video.duration * 0.5;
@@ -736,8 +785,8 @@
   document.addEventListener('keydown', function (e) {
     var key = e.keyCode || e.which, handled = true;
     if (key === 32 || key === 13) {
-      if (document.activeElement === skipBtn) {
-        skipBtn.click();
+      if (document.activeElement && document.activeElement.tagName === 'BUTTON') {
+        // Let the TV browser dispatch the button's native click once.
         return;
       }
       togglePlay();
