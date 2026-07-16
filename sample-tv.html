@@ -443,7 +443,7 @@
   <span><span id="hdr-dot2"></span> SDK: <span id="footer-sdk">—</span></span>
   <span>Breaks: <b id="footer-breaks">0</b></span>
 </footer>
-<script src="https://ima-sdk.netlify.app/3.0.0/tv-ima.js"></script>
+<script src="https://ima-sdk.netlify.app/3.0.1/tv-ima.js"></script>
 <script>
   'use strict';
   var wiiSdk = null, adsInited = false, isAdPlaying = false, skipTimer = null, skipCountdown = 5, breaksPlayed = 0;
@@ -601,7 +601,7 @@
       isUseLegacy: document.getElementById('cfg-legacy').value === 'true',
       segments: document.getElementById('cfg-segments').value,
       title: 'TV Debug', transId: 'tv-debug-001', category: '1', keyword: 'tv,debug',
-      uid: 'tv-debug-user', uil: '', partnerSkipOffset: parseInt(document.getElementById('cfg-skip-offset').value, 10) || 5,
+      uid: 'tv-debug-user', apt: '', uil: '', partnerSkipOffset: parseInt(document.getElementById('cfg-skip-offset').value, 10) || 5,
       isUsePartnerSkipButton: true, alwaysCustomSkip: true
     };
   }
