@@ -306,6 +306,10 @@
             <input type="text" id="channelId" placeholder="e.g., 123456" value="">
           </div>
           <div class="form-group">
+            <label>Position ID</label>
+            <input type="text" id="positionId" placeholder="e.g., HOME_1" value="HOME_1">
+          </div>
+          <div class="form-group">
             <label>Position ID - Banner A</label>
             <input type="text" id="positionIdA" placeholder="e.g., HOME_1" value="HOME_1">
           </div>
@@ -328,6 +332,18 @@
           <div id="sdkStatus" class="status-badge loading"
                style="display: flex; align-items: center; justify-content: center; flex: 1;">Not initialized
           </div>
+        </div>
+      </div>
+      
+      <div class="card" style="margin-bottom: 20px;">
+        <h2>Display Banner</h2>
+        <div class="ad-preview" id="adPreview">
+          <span>Ad will appear here</span>
+        </div>
+        <div class="button-group" style="margin-top: 16px;">
+          <button class="btn-success" id="btnStartDisplay">Start Display</button>
+          <button class="btn-danger" id="btnDismissDisplay">Dismiss</button>
+          <button class="btn-secondary" id="btnTestReport">Test Report</button>
         </div>
       </div>
       
@@ -452,6 +468,13 @@
         console.log('SDK Event:', event, data);
         
         var domId = data && data.domId;
+        if (domId === 'adPreview') {
+          if (event === 'rendered') {
+            document.getElementById('adPreview').classList.add('active');
+          } else if (event === 'skip' || event === 'dismiss') {
+            document.getElementById('adPreview').classList.remove('active');
+          }
+        }
         if (reportSlots[domId]) {
           if (event === 'start') {
             document.getElementById(domId).classList.remove('active');
@@ -514,8 +537,7 @@
         uid: "banner-debug-user",
         apt: '',
         uil: '',
-        // Third party renders report buttons in this sample.
-        isUsePartnerSkipButton: false
+        isUsePartnerSkipButton: true
       });
       
       welcomeSdk = new AdSDK({
@@ -548,6 +570,39 @@
   document.getElementById('btnTestWelcome').addEventListener('click', function () {
     if (!welcomeSdk) return;
     welcomeSdk.start(null, null, null, function (result) {
+    });
+  });
+  
+  document.getElementById('btnStartDisplay').addEventListener('click', function () {
+    if (!sdk) return;
+    var positionId = document.getElementById('positionId').value;
+    var bannerType = document.getElementById('bannerType').value;
+    sdk.start('adPreview', 'DISPLAY', bannerType, positionId, function (result) {
+    });
+  });
+  
+  document.getElementById('btnDismissDisplay').addEventListener('click', function () {
+    if (!sdk) return;
+    sdk.dismiss('adPreview');
+  });
+  
+  document.getElementById('btnTestReport').addEventListener('click', function () {
+    if (!sdk) {
+      console.log('SDK not initialized');
+      alert('Please initialize SDK first');
+      return;
+    }
+    
+    var testReasons = ['RESTRICTED_PRODUCT', 'MISLEADING'];
+    console.log('Testing submitReport with reasons:', testReasons);
+    
+    sdk.submitReport(testReasons, function (status) {
+      console.log('submitReport callback - status:', status);
+      if (status === 'SUCCESS') {
+        alert('Report submitted successfully!');
+      } else {
+        alert('Report submission failed!');
+      }
     });
   });
   
