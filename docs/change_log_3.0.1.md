@@ -30,7 +30,7 @@ Từ `3.0.1`, tất cả SDK hỗ trợ config `adPendingTime`; cả `adPendingT
 wiiSdk = new WI.InstreamSdk({
   env: WI.ENV.SANDBOX,
   ...,
-  uid: "user-id",
+  userId: "user-id",
   adPendingTime: 0,
   userImpressionLimit: 0,
 });
@@ -42,7 +42,7 @@ wiiSdk = new WI.InstreamSdk({
 wiiSdk = new WI.InstreamSdk({
   env: WI.ENV.SANDBOX,
   ...,
-  uid: "user-id",
+  userId: "user-id",
   adPendingTime: 0,
   userImpressionLimit: 0,
 });
@@ -54,7 +54,7 @@ wiiSdk = new WI.InstreamSdk({
 wiiSdk = new AdSDK({
   env: AdSDK.ENV.SANDBOX,
   ...,
-  uid: "user-id",
+  userId: "user-id",
   adPendingTime: 0,
   userImpressionLimit: 0,
 });
@@ -66,7 +66,7 @@ wiiSdk = new AdSDK({
 wiiSdkWelcome = new WiiSDKWelcomeTVC.WelcomeSdk({
   env: WiiSDKWelcomeTVC.Environment.SANDBOX,
   ...,
-  uid: "user-id",
+  userId: "user-id",
   adPendingTime: 0,
   userImpressionLimit: 0,
 });
@@ -76,7 +76,7 @@ wiiSdkWelcome = new WiiSDKWelcomeTVC.WelcomeSdk({
 
 | Config key | Request param | Description                                                        | Type     | Fallback |
 |:-----------|:--------------|:-------------------------------------------------------------------|:---------|:---------|
-| `uid`      | `uid`         | User ID của người dùng.                                            | `string` | `""`     |
+| `userId`      | `uid`         | User ID của người dùng.                                            | `string` | `""`     |
 | `adPendingTime`      | `apt`         |  Thời gian chờ xuất hiện giữa 2 lần quảng cáo, đơn vị giây.                     | `string \| number` | `""` |
 | `userImpressionLimit`      | `uil`         | Giới hạn số lần hiển thị quảng cáo theo user trong ngày.                      | `string \| number` | `""` |
 
