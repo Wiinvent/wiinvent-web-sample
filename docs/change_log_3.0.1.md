@@ -77,7 +77,7 @@ wiiSdkWelcome = new WiiSDKWelcomeTVC.WelcomeSdk({
 | Config key | Request param | Description                                                        | Type     | Fallback |
 |:-----------|:--------------|:-------------------------------------------------------------------|:---------|:---------|
 | `uid`      | `uid`         | User ID của người dùng.                                            | `string` | `""`     |
-| `apt`      | `apt`         | Giá trị `apt` gửi kèm request ads lên backend.                     | `string \| number` | `""` |
-| `uil`      | `uil`         | Giới hạn số lần hiển thị quảng cáo theo user.                      | `string \| number` | `""` |
+| `apt`      | `apt`         |  Thời gian chờ xuất hiện giữa 2 lần quảng cáo, đơn vị giây.                     | `string \| number` | `""` |
+| `uil`      | `uil`         | Giới hạn số lần hiển thị quảng cáo theo user trong ngày.                      | `string \| number` | `""` |
 
 > Giá trị `0` và chuỗi rỗng đều được giữ nguyên trong request. Number không hữu hạn (`NaN`, `Infinity`) và các kiểu dữ liệu khác fallback thành chuỗi rỗng.
