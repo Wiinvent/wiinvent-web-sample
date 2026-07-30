@@ -9,10 +9,10 @@ Change log:
 
 #### 1. SDK
 ```gradle
-https://cdn.jsdelivr.net/gh/KVA24/ima-sdk-public@sdk-v3.0.1/3.0.1//banner-ima.js
-https://cdn.jsdelivr.net/gh/KVA24/ima-sdk-public@sdk-v3.0.1/3.0.1//tv-ima.js
-https://cdn.jsdelivr.net/gh/KVA24/ima-sdk-public@sdk-v3.0.1/3.0.1//web-ima.js
-https://cdn.jsdelivr.net/gh/KVA24/ima-sdk-public@sdk-v3.0.1/3.0.1//welcome-ima.js
+https://ima-sdk-public.pages.dev/3.0.1//banner-ima.js
+https://ima-sdk-public.pages.dev/3.0.1//tv-ima.js
+https://ima-sdk-public.pages.dev/3.0.1//web-ima.js
+https://ima-sdk-public.pages.dev/3.0.1//welcome-ima.js
 ```
 
 #### 2. Hướng dẫn cập nhật
