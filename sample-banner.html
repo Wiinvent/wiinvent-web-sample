@@ -229,7 +229,7 @@
       background: #000;
       border-radius: 8px;
       overflow: hidden;
-      height: 400px;
+      height: 480px;
     }
     
     video {
@@ -245,6 +245,7 @@
       left: 50%;
       transform: translateX(-50%);
       width: 780px;
+      max-width: calc(100% - 32px);
       height: 120px;
       pointer-events: none;
       z-index: 10;
@@ -260,6 +261,28 @@
     .video-ad-slot.active {
       pointer-events: auto;
       opacity: 1;
+    }
+    
+    /* CENTER_BANNER: creative 16:9 */
+    .video-ad-slot.center {
+      top: 50%;
+      bottom: auto;
+      width: 480px;
+      height: 270px;
+      max-width: calc(100% - 32px);
+      max-height: calc(100% - 32px);
+      transform: translate(-50%, -50%);
+    }
+    
+    /* TRANSPARENT_BANNER: creative 1:1 */
+    .video-ad-slot.square-right {
+      top: 50%;
+      right: 24px;
+      bottom: auto;
+      left: auto;
+      width: 180px;
+      height: 180px;
+      transform: translateY(-50%);
     }
     
     .status-badge {
@@ -323,6 +346,9 @@
               <option value="HOMEPAGE_LARGE_BANNER">HOMEPAGE_LARGE_BANNER</option>
               <option value="SUBPAGE_BANNER">SUBPAGE_BANNER</option>
               <option value="PAUSE_BANNER">PAUSE_BANNER</option>
+              <option value="PAUSE_LARGE_BANNER">PAUSE_LARGE_BANNER</option>
+              <option value="CENTER_BANNER">CENTER_BANNER</option>
+              <option value="TRANSPARENT_BANNER">TRANSPARENT_BANNER</option>
             </select>
           </div>
         </div>
@@ -379,31 +405,32 @@
       </div>
       
       <div class="card">
-        <h2>Video with Pause Banner</h2>
+        <h2>Video with Pause Banner (1 player · 3 slots)</h2>
         <div class="video-container">
           <video id="videoDemoMain" controls>
             <source src="https://s0.2mdn.net/4253510/google_ddm_animation_480P.mp4" type="video/mp4">
           </video>
-          <div class="video-ad-slot" id="videoAdSlot"></div>
+          <div class="video-ad-slot" id="videoAdSlotBottom"></div>
+          <div class="video-ad-slot center" id="videoAdSlotCenter"></div>
+          <div class="video-ad-slot square-right" id="videoAdSlotSquare"></div>
         </div>
         <div class="button-group" style="margin-top: 16px;">
           <button class="btn-secondary" id="btnPlayVideo">Play</button>
           <button class="btn-secondary" id="btnPauseVideo">Pause</button>
+        </div>
+        <div class="report-result" id="pauseSlotResult" role="status" aria-live="polite">
+          bottom = PAUSE_BANNER / PAUSE_LARGE_BANNER · center = CENTER_BANNER · square = TRANSPARENT_BANNER
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<script src="https://ima-sdk-public.pages.dev/3.0.1/banner-ima.js"></script>
-
+<script src="https://ima-sdk-public.pages.dev/3.0.2/banner-ima.js"></script>
 <script>
   'use strict';
   var sdk = null, welcomeSdk = null;
   var statusEl = document.getElementById('sdkStatus');
-  var video = document.getElementById('videoDemoMain');
-  var videoAdSlot = document.getElementById('videoAdSlot');
-  var isSeeking = false, pauseTimeout = null;
   var reportSlots = {
     adPreviewA: {
       button: document.getElementById('btnReportA'),
@@ -487,11 +514,11 @@
             resetReportSlot(domId);
           }
         }
-        if (domId === 'videoAdSlot') {
+        if (domId && document.getElementById(domId) && document.getElementById(domId).classList.contains('video-ad-slot')) {
           if (event === 'rendered') {
-            document.getElementById('videoAdSlot').classList.add('active');
+            document.getElementById(domId).classList.add('active');
           } else if (event === 'skip' || event === 'dismiss') {
-            document.getElementById('videoAdSlot').classList.remove('active');
+            document.getElementById(domId).classList.remove('active');
           }
         }
         
@@ -596,7 +623,7 @@
     var testReasons = ['RESTRICTED_PRODUCT', 'MISLEADING'];
     console.log('Testing submitReport with reasons:', testReasons);
     
-    sdk.submitReport(testReasons, function (status) {
+    sdk.submitReport('adPreview', testReasons, function (status) {
       console.log('submitReport callback - status:', status);
       if (status === 'SUCCESS') {
         alert('Report submitted successfully!');
@@ -633,43 +660,61 @@
     submitExternalReport('adPreviewB');
   });
   
-  document.getElementById('btnPlayVideo').addEventListener('click', function () {
-    video.play();
-  });
+  var PAUSE_SLOTS = {
+    bottom: 'videoAdSlotBottom',
+    center: 'videoAdSlotCenter',
+    square: 'videoAdSlotSquare'
+  };
   
-  document.getElementById('btnPauseVideo').addEventListener('click', function () {
-    video.pause();
-  });
-  
-  video.addEventListener('seeking', function () {
-    isSeeking = true;
-  });
-  video.addEventListener('seeked', function () {
-    setTimeout(function () {
-      isSeeking = false;
-    }, 100);
-  });
-  
-  video.addEventListener('pause', function () {
-    if (isSeeking) return;
-    clearTimeout(pauseTimeout);
-    pauseTimeout = setTimeout(function () {
-      if (!video.paused || isSeeking) return;
+  function setupPauseBannerVideo(videoId, slots, playButtonId, pauseButtonId) {
+    var video = document.getElementById(videoId);
+    var isSeeking = false;
+    var pauseTimeout = null;
+    
+    document.getElementById(playButtonId).addEventListener('click', function () {
+      video.play();
+    });
+    
+    document.getElementById(pauseButtonId).addEventListener('click', function () {
+      video.pause();
+    });
+    
+    video.addEventListener('seeking', function () {
+      isSeeking = true;
+    });
+    video.addEventListener('seeked', function () {
+      setTimeout(function () {
+        isSeeking = false;
+      }, 100);
+    });
+    
+    video.addEventListener('pause', function () {
+      if (isSeeking) return;
+      clearTimeout(pauseTimeout);
+      pauseTimeout = setTimeout(function () {
+        if (!video.paused || isSeeking) return;
+        if (!sdk) return;
+        // Một request cho cả 3 slot; SDK render vào slot khớp adSize trả về
+        sdk.start(slots, 'OVERLAY', '', null, function (result) {
+          document.getElementById('pauseSlotResult').textContent =
+            result.status + ' · slot: ' + (result.domId || '(none)') +
+            ' · adSize: ' + ((result.data && (result.data.bannerAdSize || result.data.adSize)) || '(none)');
+        });
+      }, 150);
+    });
+    
+    video.addEventListener('play', function () {
       if (!sdk) return;
-      sdk.start('videoAdSlot', 'OVERLAY', 'PAUSE_BANNER', null, function (result) {
-      });
-    }, 150);
-  });
+      sdk.dismiss(slots);
+    });
+    
+    video.addEventListener('ended', function () {
+      if (!sdk) return;
+      sdk.dismiss(slots);
+    });
+  }
   
-  video.addEventListener('play', function () {
-    if (!sdk) return;
-    sdk.dismiss('videoAdSlot');
-  });
-  
-  video.addEventListener('ended', function () {
-    if (!sdk) return;
-    sdk.dismiss('videoAdSlot');
-  });
+  setupPauseBannerVideo('videoDemoMain', PAUSE_SLOTS, 'btnPlayVideo', 'btnPauseVideo');
   
   window.addEventListener('message', function (event) {
     if (!event.data || !event.data.type) return;
