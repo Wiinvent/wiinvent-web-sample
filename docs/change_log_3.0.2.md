@@ -74,3 +74,19 @@ Hành vi:
 ##### 2.4 Tương thích ngược
 
 `start('<domId>', bannerType, adSize, positionId, callback)` với `domId` dạng chuỗi giữ nguyên hành vi cũ. Đối tác chỉ có một vị trí pause banner thì không cần chuyển sang multi-slot.
+
+##### 2.5 `submitReport()` nhận `domId`
+
+```js
+sdk.submitReport('<domId>', ['MISLEADING'], function (status) {
+  // 'SUCCESS' | 'ERROR'
+});
+```
+
+`domId` là slot đang hiển thị banner, lấy từ `result.domId` của `start()` hoặc từ event `rendered`. Không cần truyền `adId`, SDK tự tra từ slot.
+
+Dạng cũ `submitReport(reasonReports, callback)` vẫn chạy khi instance chỉ có một banner đang hiển thị. Multi-slot pause banner nằm trong trường hợp này vì mỗi thời điểm chỉ một slot có ad, nên đối tác đang dùng dạng cũ không phải sửa.
+
+Chỉ khi một instance giữ nhiều banner cùng lúc thì dạng cũ trả `ERROR` kèm event `report_failed`, thay vì đoán nhầm banner như trước. Trường hợp đó phải truyền `domId`.
+
+Event `report_submitted` bổ sung `adId`: `{domId, adId, reasons}`. Event `report_failed` giữ `{domId, error}`, nay phát cả khi tham số không hợp lệ.
