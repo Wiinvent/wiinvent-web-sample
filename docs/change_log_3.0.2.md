@@ -10,10 +10,10 @@ Change log:
 
 #### 1. SDK
 ```gradle
-https://ima-sdk.netlify.app/3.0.2/banner-ima.js
-https://ima-sdk.netlify.app/3.0.2/tv-ima.js
-https://ima-sdk.netlify.app/3.0.2/web-ima.js
-https://ima-sdk.netlify.app/3.0.2/welcome-ima.js
+https://ima-sdk-public.pages.dev/3.0.2/banner-ima.js
+https://ima-sdk-public.pages.dev/3.0.2/tv-ima.js
+https://ima-sdk-public.pages.dev/3.0.2/web-ima.js
+https://ima-sdk-public.pages.dev/3.0.2/welcome-ima.js
 ```
 
 #### 2. Hướng dẫn cập nhật
